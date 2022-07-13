@@ -148,7 +148,7 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1
 
 # 命名空间的缩进
-NamespaceIndentation: All
+NamespaceIndentation: None
 
 # 指针和引用的对齐: Left, Right, Middle
 PointerAlignment: Left
