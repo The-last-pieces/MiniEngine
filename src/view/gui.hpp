@@ -7,9 +7,22 @@
 
 #include "GLFW/glfw3.h"
 #include <string>
-#include "color.hpp"
+#include <ctime>
+#include "windows.h"
+#include "image.hpp"
+#include "../math/mat.hpp"
 
 namespace mne {
+
+// 自动控制绘图模式作用域
+struct ModeGuard {
+    // 控制类型:   GL_TRIANGLES,GL_LINES,GL_POINTS
+    // 分别表示:   三角形,       线段,    像素
+    explicit ModeGuard(GLenum mode) { glBegin(mode); }
+
+    ~ModeGuard() { glEnd(); }
+};
+
 class MainWindow {
 protected:
     GLFWwindow* window = nullptr;
@@ -41,41 +54,46 @@ public:
         // glfw 创建运行上下文
         glfwMakeContextCurrent(window);
         // glfw 事件循环
+        clock_t next = clock(); // 控制帧率
         while (!glfwWindowShouldClose(window)) {
             clearWith(bg_color); // 清除颜色缓存
             update();            // 更新ui
 
+            if (clock() > next) Sleep(clock() - next);
             glfwSwapBuffers(window); // 实现双缓冲
-            glfwPollEvents();        // 处理IO事件(键盘,鼠标...)
+            next = clock() + 1000 / fps;
+
+            glfwPollEvents(); // 处理IO事件(键盘,鼠标...)
         }
         glfwDestroyWindow(window);
         window = nullptr;
     }
 
 protected:
-    // mode控制绘图类型如:
-    // GL_TRIANGLES,GL_LINES,GL_POINTS
-    // 分别表示:
-    // 三角形,线段,像素
-#define DRAW_WITH_MODE(mode, code) \
-    do {                           \
-        glBegin(mode);             \
-        {code};                    \
-        glEnd();                   \
-    } while (false)
+    const float size  = 0.25;
+    const int   fps   = 60;
+    const float sqrt3 = sqrtf(3);
 
-    virtual void update() {
-        // 绘制OpenGL经典图案
-        DRAW_WITH_MODE(GL_TRIANGLES, {
-            glColor3f(1.0, 0.0, 0.0); // Red
-            glVertex3f(0.0, 1.0, 0.0);
+    Mat33 rot = Factory::rotateZ(3.14159 / 60 / 60);
+    Vec3  r   = Vec3{0, sqrt3 * 2 / 3, 0} * size;
+    Vec3  g   = Vec3{-1, -sqrt3 / 3, 0} * size;
+    Vec3  b   = Vec3{1, -sqrt3 / 3, 0} * size;
 
-            glColor3f(0.0, 1.0, 0.0); // Green
-            glVertex3f(-1.0, -1.0, 0.0);
+    void update() {
+        // 绘制绕原点旋转的OpenGL经典图案
+        r = rot * r;
+        g = rot * g;
+        b = rot * b;
+        
+        ModeGuard guard(GL_TRIANGLES);
+        glColor3f(1.0, 0.0, 0.0); // Red
+        glVertex3fv(r.data);
 
-            glColor3f(0.0, 0.0, 1.0); // Blue
-            glVertex3f(1.0, -1.0, 0.0);
-        });
+        glColor3f(0.0, 1.0, 0.0); // Green
+        glVertex3fv(g.data);
+
+        glColor3f(0.0, 0.0, 1.0); // Blue
+        glVertex3fv(b.data);
     }
 
 protected:
@@ -87,7 +105,21 @@ protected:
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
-#undef DRAW_WITH_MODE
+    // 绘制BMP图
+    static void drawBMP(const BMPImage& image) {
+        ModeGuard guard(GL_POINTS);
+        auto [w, h] = image.size();
+        auto fw = number(w), fh = number(h);
+        for (int i = 0; i < w; i++) {
+            auto y = number(i) / fh * 2 - 1;
+            for (int j = 0; j < h; j++) {
+                auto [r, g, b] = image.getPixel(i, j);
+                auto x         = number(j) / fw * 2 - 1;
+                glColor3f(r, g, b);
+                glVertex2f(x, y);
+            }
+        }
+    }
 };
 } // namespace mne
 
