@@ -12,7 +12,6 @@ set(SOURCE_FILES
         src/engine/render.hpp
         src/engine/shader.hpp
         src/math/mat.hpp
-        src/math/point.hpp
         src/math/vec.hpp
         src/view/color.hpp
         src/view/gui.hpp
