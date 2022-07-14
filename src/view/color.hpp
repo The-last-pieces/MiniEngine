@@ -1,5 +1,5 @@
 //
-// Created by IMEI on 2022/7/13.
+// Created by MnZn on 2022/7/13.
 //
 
 #ifndef MINI_ENGINE_COLOR_HPP
