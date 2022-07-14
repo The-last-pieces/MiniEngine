@@ -14,9 +14,7 @@ using number = float;
 constexpr number eps = 1e-8f;
 
 template<int N>
-struct Vec {
-    static_assert(N > 0);
-
+requires(N >= 1) struct Vec {
     number data[N] = {};
 
 public:
@@ -46,8 +44,7 @@ public:
     }
 
     // 叉积
-    constexpr Vec cross(const Vec& rhs) const {
-        static_assert(N == 3, "cross only support 3D");
+    constexpr Vec cross(const Vec& rhs) const requires(N == 3) {
         const Vec& lhs = *this;
         return {lhs[1] * rhs[2] - lhs[2] * rhs[1],
                 lhs[2] * rhs[0] - lhs[0] * rhs[2],
@@ -57,30 +54,25 @@ public:
 public:
 #pragma region 特化函数
     // 平面坐标/向量
-    constexpr number x() const {
-        static_assert(N >= 1);
+    constexpr number x() const requires(N >= 1) {
         return data[0];
     }
-    constexpr number y() const {
-        static_assert(N >= 2);
+    constexpr number y() const requires(N >= 2) {
         return data[1];
     }
 
     // 空间坐标/向量
-    constexpr number z() const {
-        static_assert(N >= 3);
+    constexpr number z() const requires(N >= 3) {
         return data[2];
     }
 
     // 四元数
-    constexpr number w() const {
-        static_assert(N >= 4);
+    constexpr number w() const requires(N >= 4) {
         return data[3];
     }
 
     // 仅将w归一化
-    constexpr Vec trim() const {
-        static_assert(N == 4);
+    constexpr Vec trim() const requires(N == 4) {
         auto W = w();
         if (W > eps || W < -eps) return *this / W;
         return *this;
