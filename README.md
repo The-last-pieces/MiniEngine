@@ -1,4 +1,4 @@
-# Mini-Engine
+﻿# Mini-Engine
 
 一个迷你的图形引擎 .
 
@@ -34,8 +34,7 @@
 
 ```
 - math              // 数学相关
-    - point.hpp     // 提供点运算
-    - vec.hpp       // 提供向量运算
+    - vec.hpp       // 提供向量(也可视为点)运算
     - mat.hpp       // 提供矩阵运算
 - engine            // 引擎相关
     - model.hpp     // 储存三角形数据
