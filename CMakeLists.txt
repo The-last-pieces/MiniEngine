@@ -3,7 +3,8 @@
 project(mini_engine)
 
 # 编译选项
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
+add_compile_options(-fconcepts)
 
 # 输入文件
 set(SOURCE_FILES
