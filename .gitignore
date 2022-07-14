@@ -1,5 +1,6 @@
-.*
+﻿.*
 !.gitignore
 !.clang-format
 third_party
 *build*
+out
