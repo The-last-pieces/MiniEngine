@@ -1,4 +1,4 @@
-# 语言: None, Cpp, Java, JavaScript, ObjC, Proto, TableGen, TextProto
+﻿# 语言: None, Cpp, Java, JavaScript, ObjC, Proto, TableGen, TextProto
 Language: Cpp
 
 # 基于标准
@@ -8,7 +8,7 @@ Language: Cpp
 AccessModifierOffset: -4
 
 # 开括号后的对齐
-AlignAfterOpenBracket: BlockIndent
+AlignAfterOpenBracket: true
 
 # 连续赋值时,对齐所有等号
 AlignConsecutiveAssignments: Consecutive
