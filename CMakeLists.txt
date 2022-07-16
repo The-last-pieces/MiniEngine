@@ -10,7 +10,6 @@ endif ()
 
 # 输入文件
 set(SOURCE_FILES
-        src/engine/data.hpp
         src/engine/model.hpp
         src/engine/render.hpp
         src/engine/shader.hpp
