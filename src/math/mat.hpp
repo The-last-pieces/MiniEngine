@@ -16,6 +16,15 @@
 namespace mne {
 
 template<int M, int N>
+class Mat;
+
+// 别名
+using Mat33 = Mat<3, 3>;
+using Mat34 = Mat<3, 4>;
+using Mat43 = Mat<4, 3>;
+using Mat44 = Mat<4, 4>;
+
+template<int M, int N>
 class Mat {
     Vec<N> data[M]{};
 
@@ -178,6 +187,13 @@ public:
         return res;
     }
 
+    // 3x3变换矩阵转为4x4变换矩阵
+    constexpr Mat44 as4() const requires(M == 3 && N == 3) {
+        Mat44 res    = as<4, 4>();
+        res.at(3, 3) = 1;
+        return res;
+    }
+
 #pragma endregion
 public:
 #pragma region 访问函数
@@ -227,12 +243,6 @@ private:
 #pragma endregion
 };
 
-// 别名
-using Mat33 = Mat<3, 3>;
-using Mat34 = Mat<3, 4>;
-using Mat43 = Mat<4, 3>;
-using Mat44 = Mat<4, 4>;
-
 // 矩阵相关的工厂函数
 class Factory {
 public:
@@ -243,17 +253,10 @@ public:
         Mat<N, N> m;
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                m.at(i, j) = i == j ? 1 : 0;
+                m.at(i, j) = i == j ? 1.0f : 0.0f;
             }
         }
         return m;
-    }
-
-    // 3x3转4x4
-    constexpr static Mat44 convert33To44(const Mat33& input) {
-        Mat44 res    = input.as<4, 4>();
-        res.at(3, 3) = 1;
-        return res;
     }
 
     // 3维向量转反对称矩阵
@@ -319,12 +322,16 @@ public:
 
     // 绕任意点和任意轴旋转
     static Mat44 rotateAt(const Vec3& p, const Vec3& k, number angle) {
-        return merge(translate(-p), convert33To44(rotate(k, angle)), translate(p));
+        return merge(translate(-p), rotate(k, angle).as4(), translate(p));
     }
 
-    // 从某个方向旋转到+Z轴方向 Todo 计算欧拉角
+    // 从某个方向旋转到+Z轴方向
     static Mat33 rotateToZ(const Vec3& dir) {
-        return {};
+        // 无视x轴,绕x轴旋转到z
+        auto x_mat = rotateX(dir.pick<1, 2>().rotate({0, 1}));
+        // 无视y轴,绕y轴旋转到z
+        auto y_mat = rotateY((x_mat * dir).pick<0, 2>().rotate({0, 1}));
+        return merge(x_mat, y_mat);
     }
 
     // 从source旋转到dest方向
