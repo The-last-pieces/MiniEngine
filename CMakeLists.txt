@@ -4,7 +4,9 @@ project(mini_engine)
 
 # 编译选项
 set(CMAKE_CXX_STANDARD 20)
-add_compile_options(-fconcepts)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
+    add_compile_options(-fconcepts)
+endif ()
 
 # 输入文件
 set(SOURCE_FILES
@@ -13,6 +15,7 @@ set(SOURCE_FILES
         src/engine/render.hpp
         src/engine/shader.hpp
         src/math/mat.hpp
+        src/math/utils.hpp
         src/math/vec.hpp
         src/view/color.hpp
         src/view/gui.hpp
