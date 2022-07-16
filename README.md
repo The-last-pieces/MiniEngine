@@ -35,10 +35,10 @@
 ```
 - math              // 数学相关
     - vec.hpp       // 提供向量(也可视为点)运算
+    - utils.hpp     // 提供常用的数学相关函数
     - mat.hpp       // 提供矩阵运算
 - engine            // 引擎相关
-    - model.hpp     // 储存三角形数据
-    - data.hpp      // 负责model数据的加载与保存
+    - model.hpp     // 储存顶点,三角形数据,可从文件加载
     - shader.hpp    // 着色器,包括顶点着色器和片段着色器
     - render.hpp    // 根据摄像机+光源+模型信息通过光栅化成像输出为图片
 - view              // 显示相关
