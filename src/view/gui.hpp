@@ -5,12 +5,17 @@
 #ifndef MINI_ENGINE_GUI_HPP
 #define MINI_ENGINE_GUI_HPP
 
+#include "image.hpp"
+#include "../math/mat.hpp"
+#include "../engine/render.hpp"
 #include "GLFW/glfw3.h"
 #include <string>
 #include <ctime>
-#include "windows.h"
-#include "image.hpp"
-#include "../math/mat.hpp"
+#include <queue>
+#include <windows.h>
+
+#undef min
+#undef max
 
 namespace mne {
 
@@ -21,6 +26,26 @@ struct ModeGuard {
     explicit ModeGuard(GLenum mode) { glBegin(mode); }
 
     ~ModeGuard() { glEnd(); }
+};
+
+// 平滑统计量
+template<size_t N>
+requires(N > 0) class Average {
+private:
+    std::queue<double> q;
+
+    double sum{};
+
+public:
+    operator double() const { return sum / q.size(); }
+
+    Average& operator+=(double val) { return expand(val), *this; }
+
+private:
+    void expand(double cur) {
+        sum += cur, q.push(cur);
+        if (q.size() > N) sum -= q.front(), q.pop();
+    }
 };
 
 class MainWindow {
@@ -53,15 +78,24 @@ public:
         if (window == nullptr) return;
         // glfw 创建运行上下文
         glfwMakeContextCurrent(window);
+        // 帧率相关
+        clock_t         stop, start;
+        Average<60 * 3> ave_fps;
         // glfw 事件循环
-        clock_t next = clock(); // 控制帧率
         while (!glfwWindowShouldClose(window)) {
-            clearWith(bg_color); // 清除颜色缓存
-            update();            // 更新ui
+            start = clock();
+            stop  = start + CLOCKS_PER_SEC / fps;
 
-            if (clock() > next) Sleep(clock() - next);
+            clearWith(bg_color);     // 清除颜色缓存
+            update();                // 更新ui
             glfwSwapBuffers(window); // 实现双缓冲
-            next = clock() + 1000 / fps;
+
+            if (clock() < stop) Sleep(stop - clock());
+            stop = clock();
+
+            ave_fps += stop - start;
+            double fact_fps = CLOCKS_PER_SEC / ave_fps;
+            glfwSetWindowTitle(window, (title.data() + (" FPS: " + std::to_string(fact_fps))).data());
 
             glfwPollEvents(); // 处理IO事件(键盘,鼠标...)
         }
@@ -70,30 +104,15 @@ public:
     }
 
 protected:
-    const float size  = 0.25;
-    const int   fps   = 60;
-    const float sqrt3 = sqrtf(3);
+    const int fps = 60;
 
-    Mat33 rot = Factory::rotateZ(3.14159 / 60 / 60);
-    Vec3  r   = Vec3{0, sqrt3 * 2 / 3, 0} * size;
-    Vec3  g   = Vec3{-1, -sqrt3 / 3, 0} * size;
-    Vec3  b   = Vec3{1, -sqrt3 / 3, 0} * size;
+    BMPImage                image;
+    std::shared_ptr<Render> render = std::make_shared<Render>();
 
     void update() {
-        // 绘制绕原点旋转的OpenGL经典图案
-        r = rot * r;
-        g = rot * g;
-        b = rot * b;
-        
-        ModeGuard guard(GL_TRIANGLES);
-        glColor3f(1.0, 0.0, 0.0); // Red
-        glVertex3fv(r.data);
-
-        glColor3f(0.0, 1.0, 0.0); // Green
-        glVertex3fv(g.data);
-
-        glColor3f(0.0, 0.0, 1.0); // Blue
-        glVertex3fv(b.data);
+        image.init(width, height);
+        render->drawAt(image);
+        drawBMP(image);
     }
 
 protected:
