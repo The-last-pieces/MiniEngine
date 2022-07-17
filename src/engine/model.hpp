@@ -29,12 +29,23 @@ struct Transform {
     }
 };
 
+// 三角形的节点信息
+struct TriangleNode {
+    int pos; // 位置信息,在vertices中的下标
+    int tex; // 纹理信息,在textures中的下标
+    // Todo 其他信息
+};
+
 class Model {
 public:
-    std::vector<Vec3>               vertices{};  // 顶点集合
-    std::vector<std::array<int, 3>> triangles{}; // 三角形集合(储存在vertices中的下标)
+    std::vector<Vec3> vertices{}; // 顶点空间集合
+    std::vector<Vec2> textures{}; // 纹理坐标集合
+
+    std::vector<std::array<TriangleNode, 3>> triangles{}; // 三角形集合(储存在vertices中的下标)
 
     Transform transform; // 模型自身的变换
+
+    TGAImage colorTexture; // 颜色纹理信息
 
 public:
     Model() = default;
@@ -49,7 +60,6 @@ public:
         vertices.clear(), triangles.clear(), transform = {};
         std::string line, type; // 单行内容,内容类型
         Vec3        v3;
-        Vec2        v2;
         char        ignore;
         while (std::getline(in, line)) {
             std::istringstream iss(line);
@@ -59,6 +69,7 @@ public:
                 iss >> v3, vertices.push_back(v3);
             } else if (type == "vt") { // Todo
                 // 纹理坐标列表,格式为"u v( w)?" , u,v,w均属于[0,1] , w默认为0.0
+                iss >> v3.x() >> v3.y(), textures.push_back(v3.as<2>());
             } else if (type == "vn") { // Todo
                 // 顶点法线列表,格式为"x y z" , 法线不规定是单位向量.
             } else if (type == "vp") { // Todo
@@ -66,11 +77,12 @@ public:
             } else if (type == "f") {
                 // 多边形面元素 , 暂时只支持三角形面 , 索引从1开始
                 // f v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3 ...
-                int                v, t, n;
-                std::array<int, 3> triangle{};
+                int v, t, n;
+
+                std::array<TriangleNode, 3> triangle{};
                 for (int i = 0; i < 3; ++i) {
                     iss >> v >> ignore >> t >> ignore >> n;
-                    triangle[i] = v - 1;
+                    triangle[i] = {v - 1, t - 1};
                 }
                 triangles.push_back(triangle);
             }
@@ -79,19 +91,19 @@ public:
         printf("vertex : %d , face : %d \n", vertex_count(), face_count());
     }
 
-    void saveToDisk(std::string_view save_path) {
-        std::ofstream out(save_path.data());
-        if (!out) return;
-        // 顶点坐标
-        for (auto& vertex : vertices) out << "v " << vertex << '\n';
-        // 表面坐标
-        for (auto& abc : triangles) {
-            out << "f ";
-            for (auto v : abc) out << v + 1 << "/0/0 ";
-            out << '\n';
-        }
-        out.close();
-    }
+    //    void saveToDisk(std::string_view save_path) {
+    //        std::ofstream out(save_path.data());
+    //        if (!out) return;
+    //        // 顶点坐标
+    //        for (auto& vertex : vertices) out << "v " << vertex << '\n';
+    //        // 表面坐标
+    //        for (auto& abc : triangles) {
+    //            out << "f ";
+    //            for (auto v : abc) out << v + 1 << "/0/0 ";
+    //            out << '\n';
+    //        }
+    //        out.close();
+    //    }
 
 public:
     int vertex_count() const { return (int) vertices.size(); }
