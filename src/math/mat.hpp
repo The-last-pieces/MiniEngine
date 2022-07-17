@@ -87,7 +87,7 @@ public:
     constexpr friend Vec<N> operator*(const Vec<M>& rhs, const Mat<M, N>& lhs) {
         Vec<N> ret;
         for (int i = 0; i < N; i++) {
-            ret[i] = rhs * lhs.col(i);
+            ret[i] = rhs * lhs.col(i); // Todo 优化右乘
         }
         return ret;
     }
@@ -192,6 +192,11 @@ public:
         Mat44 res    = as<4, 4>();
         res.at(3, 3) = 1;
         return res;
+    }
+
+    // 特化Mat44 x Vec3
+    constexpr Vec3 operator*(const Vec3& rhs) const requires(M == 4 && N == 4) {
+        return (*this * rhs.as<4>()).template as<3>();
     }
 
 #pragma endregion
