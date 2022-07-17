@@ -53,84 +53,58 @@ class Render {
     Vec3 eye_dir{0, 0, 1};  // 视线方向
     Vec3 eye_norm{0, 1, 0}; // 视线平面法线
 
-    std::shared_ptr<IShader> shader{}; // 着色器接口,可以在其中实现光照功能
-    std::shared_ptr<Model>   model{};  // 要渲染的模型数据
+    // std::shared_ptr<IShader> shader{}; // Todo 着色器接口,可以在其中实现光照功能
+    std::vector<std::shared_ptr<Model>> models{}; // 要渲染的模型数据
 
     std::vector<number> depth;      // z_buffer缓存
     int                 vh{}, vw{}; // 视口大小
     BMPImage*           canvas{};   // 当前渲染对象
 
+    Mat44 proj_mat     = Factory::identity<4>(); // 投影矩阵 : 透视转正交,依赖视口函数
+    Mat44 proj_mat_inv = Factory::identity<4>(); // 投影矩阵逆矩阵 : 正交转透视
+    Mat44 trans_mat{};                           // 刚体变换矩阵,不改变形状(投影矩阵会改变形状)
+
 public:
     Render() {
-        model = std::make_shared<Model>();
-        model->loadFromDisk(R"(E:/vscode/MiniEngine/res/african_head.obj)");
-        model->transform.scale = {200, 200, 200};
-        //model->transform.rotate.x() = pi / 3;
-        model->transform.rotate.y() = pi;
-        model->transform.rotate.z() = -pi / 2;
+        std::string_view paths[][2] = {
+            //            {
+            //                R"(E:\vscode\MiniEngine\res\african_head\african_head.obj)",
+            //                R"(E:\vscode\MiniEngine\res\african_head\african_head_diffuse.tga)",
+            //            },
+            //            {
+            //                R"(E:\vscode\MiniEngine\.third_party\obj\floor.obj)",
+            //                R"(E:\vscode\MiniEngine\.third_party\obj\floor_diffuse.tga)",
+            //            }
+            {
+                R"(E:\vscode\MiniEngine\res\boggie\body.obj)",
+                R"(E:\vscode\MiniEngine\res\boggie\body_diffuse.tga)",
+            },
+            {
+                R"(E:\vscode\MiniEngine\res\boggie\eyes.obj)",
+                R"(E:\vscode\MiniEngine\res\boggie\eyes_diffuse.tga)",
+            },
+            {
+                R"(E:\vscode\MiniEngine\res\boggie\head.obj)",
+                R"(E:\vscode\MiniEngine\res\boggie\head_diffuse.tga)",
+            },
+        };
+        for (auto [obj, tga] : paths) {
+            std::shared_ptr<Model> model = std::make_shared<Model>();
+            model->loadFromDisk(obj);
+            model->colorTexture.loadFromDisk(tga);
+            models.push_back(model);
 
-        //        model->vertices = {
-        //            {-1, -1, -1},
-        //            {1, -1, -1},
-        //            {1, 1, -1},
-        //            {-1, 1, -1},
-        //            {-1, -1, 1},
-        //            {1, -1, 1},
-        //            {1, 1, 1},
-        //            {-1, 1, 1},
-        //        };
-        //        for (auto& p : model->vertices) p *= 50;
-        //        model->triangles = {
-        //            {0, 1, 2},
-        //            {0, 2, 3},
-        //            {4, 5, 6},
-        //            {4, 6, 7},
-        //            {0, 1, 5},
-        //            {0, 5, 4},
-        //            {3, 2, 6},
-        //            {3, 6, 7},
-        //            {1, 2, 6},
-        //            {1, 6, 5},
-        //            {0, 3, 7},
-        //            {0, 7, 4},
-        //        };
-        //        model->vertices = {
-        //            {100, 100, 0},
-        //            {100, -100, 0},
-        //            {-100, -100, 0},
-        //            {-100, 100, 0}};
-        //                model->triangles = {{0, 1, 2}, {2, 3, 0}};
-        //                t_color          = {Color::fromRGB256(255, 0, 0), Color::fromRGB256(0, 255, 0)};
-
-        // 随机生成100个点
-        //        const int N = 1000, l = -100, r = 100;
-        //        auto      maker = [=]() {
-        //            return float(randInt(l, r + 1));
-        //        };
-        //
-        //        for (int i = 0; i < N; ++i) {
-        //            model->vertices.push_back({maker(), maker(), maker()});
-        //        }
-        //
-        //        const int M = 2500;
-        //        for (int i = 0; i < M; ++i) {
-        //            int a, b, c;
-        //            do {
-        //                a = randInt(0, N), b = randInt(0, N), c = randInt(0, N);
-        //            } while (!(a != b && a != c && b != c));
-        //            model->triangles.push_back({a, b, c});
-        //        }
+            model->transform.scale      = {300, 300, 300};
+            model->transform.rotate.y() = pi;
+            model->transform.rotate.z() = -pi / 2;
+        }
     }
 
-    std::vector<Color> t_color;
-
 public:
+    // Todo 修复运行一定时间后异常的闪退bug
     void drawAt(BMPImage& image) {
         canvas           = &image;
         std::tie(vh, vw) = image.size(); // 视口大小
-        while (t_color.size() < model->triangles.size()) {
-            t_color.push_back(Color::fromRGB256(randInt(55, 256), randInt(55, 256), randInt(55, 256)));
-        }
 
         // Todo 键盘控制
         //if (_kbhit()) {
@@ -143,56 +117,71 @@ public:
         //    else if (ch == 'd') y += pi / 60;
         //}
         //eye_norm = Factory::rotateZ(pi / 60) * eye_norm;
-        model->transform.rotate.y() += pi / 60;
-
-        // 转到视口中心
-        auto to_center = Factory::translate(Vec3{float(vw) / 2, float(vh) / 2, 0});
-        // 模型变换
-        auto model_mat = model->transform.get_matrix();
+        depth.assign(vh * vw, std::numeric_limits<number>::max());
         // 视图变换
         auto view_mat = getViewMat();
-        // 正交投影 Todo 透视投影
+        // 转到视口中心
+        auto to_center = Factory::translate(Vec3{float(vw) / 2, float(vh) / 2, 0});
 
-        auto trans_mat = Factory::merge(model_mat, view_mat, to_center);
+        // 渲染每个model
+        for (const auto& model : models) {
+            model->transform.rotate.y() += pi / 60;
+            // 模型变换
+            auto model_mat = model->transform.get_matrix();
+            // 正交投影 Todo 透视投影
 
-        depth.assign(vh * vw, std::numeric_limits<number>::max());
+            trans_mat = Factory::merge(model_mat, view_mat, to_center);
 
-        // 开始绘图
-        int i = 0;
-        for (auto [ai, bi, ci] : model->triangles) {
-            Vec3 abc[] = {model->vertices[ai], model->vertices[bi], model->vertices[ci]};
-            // 投影到视图空间
-            for (auto& p : abc) p = (trans_mat * p.as<4>()).as<3>();
-            // 对每个三角形,遍历所有像素
-            drawTriangle(abc[0], abc[1], abc[2], t_color[i++]);
+            // 渲染每个面
+            for (auto [ta, tb, tc] : model->triangles) {
+                drawTriangle(model, ta, tb, tc);
+            }
         }
-        // 裁剪空间[0,vh)x[0,vw)
     }
 
 private:
-    void drawTriangle(const Vec3& a, const Vec3& b, const Vec3& c, const Color& fill) {
+    // target为要渲染的模型, t_abc为将渲染三角形的三个顶点
+    void drawTriangle(const std::shared_ptr<Model>& target,
+                      const TriangleNode& ta, const TriangleNode& tb, const TriangleNode& tc) {
+        // 获取顶点坐标
+        Vec3 poses[] = {target->vertices[ta.pos], target->vertices[tb.pos], target->vertices[tc.pos]};
+        // 变换到视图空间
+        for (auto& p : poses) p = trans_mat * p;
+
+        // 缓存abc
+        Vec3 a = poses[0], b = poses[1], c = poses[2];
+        // 缓存xy分量
         Vec2 a2 = a.as<2>(), b2 = b.as<2>(), c2 = c.as<2>();
+        // 缓存深度信息,参与插值
         Vec3 z3 = make_vec(a.z(), b.z(), c.z());
+
+        // 获取纹理坐标
+        Vec2 texes[] = {target->textures[ta.tex], target->textures[tb.tex], target->textures[tc.tex]};
+        // 缓存uv分量,参与插值
+        Vec3 u3 = make_vec(texes[0].x(), texes[1].x(), texes[2].x());
+        Vec3 v3 = make_vec(texes[0].y(), texes[1].y(), texes[2].y());
+
         // 获取i方向边界
-        auto i_min = (int) make_vec(a.x(), b.x(), c.x()).v_min();
-        if (i_min < 0) i_min = 0;
-        auto i_max = (int) make_vec(a.x(), b.x(), c.x()).v_max();
-        if (i_max > vh - 1) i_max = vh - 1;
-#pragma omp parallel for
-        // 不必为每个像素都执行in_triangle ,
-        // 可以遍历每个纵坐标获取最左和最右点,然后直接循环填充即可
+        auto i_min = std::max((int) make_vec(a.x(), b.x(), c.x()).v_min(), 0);
+        auto i_max = std::min((int) make_vec(a.x(), b.x(), c.x()).v_max(), vh - 1);
+
         // Todo 反锯齿
+#pragma omp parallel for
         for (int i = i_min; i <= i_max; ++i) {
+            // 获取紧致的左右边界
             auto [fl, fr] = getTriangleBound(a2, b2, c2, float(i));
             auto l = std::max(0, (int) fl), r = std::min(vw - 1, (int) fr);
             while (l <= r && !inTriangle(make_vec(i, l), a2, b2, c2)) ++l;
             while (l <= r && !inTriangle(make_vec(i, r), a2, b2, c2)) --r;
+            // 填充[l,r]区间
             for (int j = l; j <= r; ++j) {
                 Vec2 p = make_vec(i, j);
+                // Todo (进行逆投影变换)3D空间再求重心坐标
                 Vec3 k = getGravityPos(a2, b2, c2, p);
-                //if (in_triangle(p, a2, b2, c2)) {
-                setPixel(i, j, fill, k * z3); // z=k * z3
-                //}
+                // 根据重心坐标进行插值
+                number dep = k * z3;                   // 深度
+                Vec2   uv  = make_vec(k * u3, k * v3); // 纹理坐标
+                setPixel(i, j, target->colorTexture.getPixel(uv), dep);
             }
         }
     }
