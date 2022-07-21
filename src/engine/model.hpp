@@ -47,6 +47,8 @@ public:
 
     TGAImage colorTexture; // 颜色纹理信息
 
+    std::shared_ptr<IShader> shader; // 模型的着色器
+
 public:
     Model() = default;
 
