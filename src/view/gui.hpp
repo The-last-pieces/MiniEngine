@@ -62,8 +62,8 @@ private:
     Color bg_color = {0, 0, 0};
 
 public:
-    MainWindow(std::string_view title, int width, int height):
-        title(title), width(width), height(height) {
+    MainWindow(std::string_view title, int width, int height, std::shared_ptr<Render> render):
+        title(title), width(width), height(height), render(std::move(render)) {
         glfwInit(); // 初始化
     }
 
@@ -107,11 +107,11 @@ protected:
     const int fps = 60;
 
     BMPImage                image;
-    std::shared_ptr<Render> render = std::make_shared<Render>();
+    std::shared_ptr<Render> render{};
 
     void update() {
         image.init(width, height);
-        render->drawAt(image);
+        if (render) render->drawAt(image);
         drawBMP(image);
     }
 
