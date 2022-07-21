@@ -18,6 +18,16 @@ inline int randInt(int l, int r) {
     return int(maker() % (r - l)) + l;
 }
 
+// [0,n)
+inline int randInt(int n) {
+    return randInt(0, n);
+}
+
+template<class T>
+inline T clamp(const T& l, const T& r, const T& v) {
+    return std::max(l, std::min(r, v));
+}
+
 } // namespace mne
 
 #endif //MINI_ENGINE_UTILS_HPP
