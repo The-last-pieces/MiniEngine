@@ -8,10 +8,10 @@
 #include "../view/image.hpp"
 #include "../math/mat.hpp"
 #include "../math/utils.hpp"
+#include "camera.hpp"
 #include "shader.hpp"
 #include "model.hpp"
 #include <memory>
-#include <conio.h>
 
 /*
  本模块将完成光栅化成像流程.
@@ -46,142 +46,162 @@ namespace mne {
  裁剪空间(所有坐标都位于[-1,1]^3中)
  + 进行深度检测
  屏幕空间(所有数据都输出到固定大小的BMPImage中)
+
+ - 输入需要渲染的所有图元
+ - 运行顶点着色器
+   负责根据变换(模型+视图+透视)输出顶点坐标.
+ - 图元装配
+   负责将视锥体(可见空间)外的图元过滤,派发给不同光栅化函数.
+ - 光栅化
+   负责将图元(3D信息)转为片元.
+ - 运行片元着色器
+   负责输出每个像素的颜色.
+ - 输出到缓存区
+   深度检测,透明度,阴影等.
  */
 
 class Render {
-    Vec3 eye_pos{};         // 视线位置
-    Vec3 eye_dir{0, 0, 1};  // 视线方向
-    Vec3 eye_norm{0, 1, 0}; // 视线平面法线
+public:
+    Camera camera; // 摄像机对象
 
-    // std::shared_ptr<IShader> shader{}; // Todo 着色器接口,可以在其中实现光照功能
-    std::vector<std::shared_ptr<Model>> models{}; // 要渲染的模型数据
+    std::vector<std::shared_ptr<Model>> models{}; // 要渲染的模型集合
+private:
+    BMPImage* canvas{};   // 当前渲染对象
+    int       vh{}, vw{}; // 视口大小
 
-    std::vector<number> depth;      // z_buffer缓存
-    int                 vh{}, vw{}; // 视口大小
-    BMPImage*           canvas{};   // 当前渲染对象
+    std::vector<number> depth; // z_buffer缓存
 
-    Mat44 proj_mat     = Factory::identity<4>(); // 投影矩阵 : 透视转正交,依赖视口函数
-    Mat44 proj_mat_inv = Factory::identity<4>(); // 投影矩阵逆矩阵 : 正交转透视
-    Mat44 trans_mat{};                           // 刚体变换矩阵,不改变形状(投影矩阵会改变形状)
+    Mat44 trans_mat{};     // 当前模型的变换矩阵
+    Mat44 trans_mat_inv{}; // trans_mat.invert()的缓存
+    Mat44 screen_mat{};    //
+    Mat44 screen_mat_inv{};
+
+    struct VertexData {
+        Vec3  position;
+        Vec2  texCoord;
+        Color color{};
+    };
 
 public:
-    Render() {
-        std::string_view paths[][2] = {
-            //            {
-            //                R"(E:\vscode\MiniEngine\res\african_head\african_head.obj)",
-            //                R"(E:\vscode\MiniEngine\res\african_head\african_head_diffuse.tga)",
-            //            },
-            //            {
-            //                R"(E:\vscode\MiniEngine\.third_party\obj\floor.obj)",
-            //                R"(E:\vscode\MiniEngine\.third_party\obj\floor_diffuse.tga)",
-            //            }
-            {
-                R"(E:\vscode\MiniEngine\res\boggie\body.obj)",
-                R"(E:\vscode\MiniEngine\res\boggie\body_diffuse.tga)",
-            },
-            {
-                R"(E:\vscode\MiniEngine\res\boggie\eyes.obj)",
-                R"(E:\vscode\MiniEngine\res\boggie\eyes_diffuse.tga)",
-            },
-            {
-                R"(E:\vscode\MiniEngine\res\boggie\head.obj)",
-                R"(E:\vscode\MiniEngine\res\boggie\head_diffuse.tga)",
-            },
-        };
-        for (auto [obj, tga] : paths) {
-            std::shared_ptr<Model> model = std::make_shared<Model>();
-            model->loadFromDisk(obj);
-            model->colorTexture.loadFromDisk(tga);
-            models.push_back(model);
-
-            model->transform.scale      = {300, 300, 300};
-            model->transform.rotate.y() = pi;
-            model->transform.rotate.z() = -pi / 2;
-        }
-    }
+    Render() = default;
 
 public:
-    // Todo 修复运行一定时间后异常的闪退bug
     void drawAt(BMPImage& image) {
-        canvas           = &image;
-        std::tie(vh, vw) = image.size(); // 视口大小
+        vh = camera.vh, vw = camera.vw;      // 视口大小
+        canvas = &image, image.init(vh, vw); // 绑定画布
+        camera.update();                     // 更新摄像机参数
 
-        // Todo 键盘控制
-        //if (_kbhit()) {
-        //    auto& x  = model->transform.rotate.x();
-        //    auto& y  = model->transform.rotate.y();
-        //    int   ch = tolower(_getch());
-        //    if (ch == 'w') x -= pi / 60;
-        //    else if (ch == 's') x += pi / 60;
-        //    else if (ch == 'a') y -= pi / 60;
-        //    else if (ch == 'd') y += pi / 60;
-        //}
-        //eye_norm = Factory::rotateZ(pi / 60) * eye_norm;
+        // 初始化深度缓存
         depth.assign(vh * vw, std::numeric_limits<number>::max());
-        // 视图变换
-        auto view_mat = getViewMat();
-        // 转到视口中心
-        auto to_center = Factory::translate(Vec3{float(vw) / 2, float(vh) / 2, 0});
+
+        // 转观察空间
+        auto view_mat = camera.getViewMat();
+        // 转裁剪空间
+        auto project_mat = camera.getProjectionMat();
+        // 转屏幕空间
+        screen_mat     = camera.getScreenMat();
+        screen_mat_inv = screen_mat.invert();
 
         // 渲染每个model
         for (const auto& model : models) {
             model->transform.rotate.y() += pi / 60;
-            // 模型变换
+            // 局部转世界空间
             auto model_mat = model->transform.get_matrix();
-            // 正交投影 Todo 透视投影
 
-            trans_mat = Factory::merge(model_mat, view_mat, to_center);
+            trans_mat     = Factory::merge(model_mat, view_mat, project_mat, screen_mat);
+            trans_mat_inv = trans_mat.invert();
 
             // 渲染每个面
-            for (auto [ta, tb, tc] : model->triangles) {
-                drawTriangle(model, ta, tb, tc);
+            for (auto& abc : model->triangles) {
+                std::array<VertexData, 3> data;
+                // 为每个顶点执行顶点着色器,输出裁剪空间的坐标
+                for (int i = 0; i < 3; ++i) {
+                    auto& drf = data[i];
+                    drf       = {model->vertices[abc[i].pos], model->textures[abc[i].tex]};
+                    model->shader->vertex(drf.position, drf.texCoord, trans_mat, drf.color);
+                }
+                drawTriangle(model->shader, data);
             }
         }
     }
 
 private:
-    // target为要渲染的模型, t_abc为将渲染三角形的三个顶点
-    void drawTriangle(const std::shared_ptr<Model>& target,
-                      const TriangleNode& ta, const TriangleNode& tb, const TriangleNode& tc) {
-        // 获取顶点坐标
-        Vec3 poses[] = {target->vertices[ta.pos], target->vertices[tb.pos], target->vertices[tc.pos]};
-        // 变换到视图空间
-        for (auto& p : poses) p = trans_mat * p;
+    // target为要渲染的模型, data[i]为三角形顶点信息: (position, texCoord, color)
+    void drawTriangle(const std::shared_ptr<IShader>& shader, const std::array<VertexData, 3>& data) {
+        // 检查是否所有点都在[-1,1]外
+        bool all_out = true;
+        for (auto& one : data) {
+            auto tmp = screen_mat_inv * one.position;
+            auto min = tmp.v_min(), max = tmp.v_max();
+            all_out = all_out && (min < -1 || max > 1);
+        }
+        //if (all_out) return; //过滤
 
+        // 缓存颜色
+        std::array<Color, 3> colors{data[0].color, data[1].color, data[2].color};
+        // 缓存颜色分量
+        Vec3 red{colors[0].r, colors[1].r, colors[2].r};
+        Vec3 green{colors[0].g, colors[1].g, colors[2].g};
+        Vec3 blue{colors[0].b, colors[1].b, colors[2].b};
         // 缓存abc
-        Vec3 a = poses[0], b = poses[1], c = poses[2];
+        Vec3 a = data[0].position, b = data[1].position, c = data[2].position;
+        Vec3 rawA = trans_mat_inv * a, rawB = trans_mat_inv * b, rawC = trans_mat_inv * c;
+        // 获取abc平面的法向量
+        Vec3 norm = (b - a).cross(c - a).normalize();
         // 缓存xy分量
         Vec2 a2 = a.as<2>(), b2 = b.as<2>(), c2 = c.as<2>();
         // 缓存深度信息,参与插值
         Vec3 z3 = make_vec(a.z(), b.z(), c.z());
-
-        // 获取纹理坐标
-        Vec2 texes[] = {target->textures[ta.tex], target->textures[tb.tex], target->textures[tc.tex]};
-        // 缓存uv分量,参与插值
-        Vec3 u3 = make_vec(texes[0].x(), texes[1].x(), texes[2].x());
-        Vec3 v3 = make_vec(texes[0].y(), texes[1].y(), texes[2].y());
-
+        // 缓存纹理坐标
+        Vec2 texes[] = {data[0].texCoord, data[1].texCoord, data[2].texCoord};
+        Vec3 u3      = make_vec(texes[0].x(), texes[1].x(), texes[2].x());
+        Vec3 v3      = make_vec(texes[0].y(), texes[1].y(), texes[2].y());
         // 获取i方向边界
         auto i_min = std::max((int) make_vec(a.x(), b.x(), c.x()).v_min(), 0);
         auto i_max = std::min((int) make_vec(a.x(), b.x(), c.x()).v_max(), vh - 1);
 
-        // Todo 反锯齿
 #pragma omp parallel for
+        // Todo 阴影
         for (int i = i_min; i <= i_max; ++i) {
             // 获取紧致的左右边界
             auto [fl, fr] = getTriangleBound(a2, b2, c2, float(i));
             auto l = std::max(0, (int) fl), r = std::min(vw - 1, (int) fr);
+            // Todo 反锯齿
             while (l <= r && !inTriangle(make_vec(i, l), a2, b2, c2)) ++l;
             while (l <= r && !inTriangle(make_vec(i, r), a2, b2, c2)) --r;
             // 填充[l,r]区间
             for (int j = l; j <= r; ++j) {
-                Vec2 p = make_vec(i, j);
-                // Todo (进行逆投影变换)3D空间再求重心坐标
-                Vec3 k = getGravityPos(a2, b2, c2, p);
-                // 根据重心坐标进行插值
-                number dep = k * z3;                   // 深度
-                Vec2   uv  = make_vec(k * u3, k * v3); // 纹理坐标
-                setPixel(i, j, target->colorTexture.getPixel(uv), dep);
+                // 遍历屏幕空间中的点
+                Vec3 rawPoint = make_vec(i, j, 0);
+                // 获取z轴信息
+                rawPoint = intersect(a, norm, make_vec(0, 0, 1), rawPoint);
+
+                // Todo 修复逆变换后缺面的bug
+                // 变换到局部空间
+                //rawPoint = trans_mat_inv * rawPoint;
+                // 进行逆变换再求重心坐标
+                //Vec3 gPos = getGravityPos(rawA, rawB, rawC, rawPoint);
+                Vec3 gPos = getGravityPos(a2, b2, c2, rawPoint.as<2>());
+                // 映射回屏幕空间
+                //rawPoint = trans_mat * rawPoint;
+
+                // 着色器的输入变量,根据重心坐标进行插值
+                number dep = gPos * z3;                      // 深度
+                Vec2   tex = make_vec(gPos * u3, gPos * v3); // 纹理坐标
+                // 着色器的输出变量
+                Color color{};         // 像素颜色
+                bool  discard = false; // 是否弃用
+
+                // 将uv坐标约束到[0,1]范围内
+                for (int t = 0; t < 2; ++t) tex[t] = clamp<number>(0, tex[t], 1);
+                // 执行片元着色器
+                shader->fragment(rawPoint, tex, color, discard);
+                if (discard) {
+                    Vec3 vecColor = make_vec(gPos * red, gPos * green, gPos * blue);
+                    color         = {vecColor.x(), vecColor.y(), vecColor.z()};
+                }
+                // 设置像素(并执行深度检测)
+                setPixel(i, j, color, dep);
             }
         }
     }
@@ -197,19 +217,6 @@ private:
         }
     }
 
-    Mat44 getViewMat() const {
-        // eye_dir->+z
-        auto to_z = Factory::rotateToZ(eye_dir);
-        // eye_norm->+y
-        auto fact_norm = (to_z * eye_norm).as<2>();
-        // 绕z轴变换到+y方向
-        auto to_y = Factory::rotateZ(fact_norm.rotate({0, 1}));
-        // eye_pos->原点
-        return Factory::merge(
-            Factory::translate(-eye_pos),
-            to_z.as4(), to_y.as4());
-    }
-
 private:
     // p是否在abc构成的三角形中
     static bool inTriangle(const Vec2 p, const Vec2& a, const Vec2& b, const Vec2& c) {
@@ -222,6 +229,15 @@ private:
     }
 
     // 获取重心坐标
+    static Vec3 getGravityPos(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& p) {
+        decltype(auto) area = [](const Vec3& v1, const Vec3& v2, const Vec3& v3) {
+            return (v1 - v3).cross(v2 - v3).length() / 2;
+        };
+        number s1 = area(b, c, p), s2 = area(a, b, p), s3 = area(a, b, p);
+        number s = s1 + s2 + s3;
+        return {s1 / s, s2 / s, s3 / s};
+    }
+
     static Vec3 getGravityPos(const Vec2& a, const Vec2& b, const Vec2& c, const Vec2& p) {
         decltype(auto) maker = [](const Vec2& v1, const Vec2& v2, const Vec2& v3) {
             return Mat33{
@@ -274,6 +290,17 @@ private:
         Vec2   v = (ea - sa).normalize(), w = (eb - sb).normalize(), u = sa - sb;
         number t1 = w.cdot(u) / v.cdot(w);
         return sa + t1 * v;
+    }
+
+    // 获取(r-p)n=0平面与直线r=tv+s
+    // p为平面上一点,n为平面法线,v为直线方向向量,s为直线上一点
+    static Vec3 intersect(
+        const Vec3& facePoint, const Vec3& faceNorm,
+        const Vec3& lineDir, const Vec3& linePoint) {
+        return (((facePoint - linePoint) * faceNorm)
+                / (lineDir * faceNorm))
+                   * lineDir
+               + linePoint;
     }
 };
 
