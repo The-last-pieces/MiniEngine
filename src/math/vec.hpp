@@ -22,17 +22,10 @@ requires(N >= 1) struct Vec {
     number data[N] = {};
 
 public:
-#pragma region 杂项函数
+#pragma region 容器相关
     // 下标访问
     constexpr number& operator[](int i) { return data[i]; }
     constexpr number  operator[](int i) const { return data[i]; }
-
-    // 长度的平方
-    constexpr number norm2() const { return *this * *this; }
-    // 向量长度
-    constexpr number length() const { return std::sqrt(norm2()); }
-    // 归一化
-    constexpr Vec normalize() const { return *this / length(); }
 
     // 转换为其他长度的向量,如果N<M则用fill填充
     template<int M>
@@ -52,6 +45,16 @@ public:
     constexpr Vec<sizeof...(idx)> pick() const {
         return Vec<sizeof...(idx)>{data[idx]...};
     }
+
+#pragma endregion
+public:
+#pragma region 非运算符运算
+    // 长度的平方
+    constexpr number norm2() const { return *this * *this; }
+    // 向量长度
+    constexpr number length() const { return std::sqrt(norm2()); }
+    // 归一化
+    constexpr Vec normalize() const { return *this / length(); }
 
     // 最值
     constexpr number v_min() const {
@@ -188,8 +191,19 @@ using Vec3 = Vec<3>;
 using Vec4 = Vec<4>;
 
 template<class... Args>
-inline auto make_vec(Args&&... args) {
+inline auto make_vec(Args&&... args) requires((std::is_nothrow_convertible_v<Args, number> && ...)) {
     return Vec<sizeof...(args)>{number(args)...};
+}
+
+// 拼接多个向量
+template<int A, int B, int... N>
+inline constexpr auto concat_vec(const Vec<A>& a, const Vec<B>& b, const Vec<N>&... args) {
+    if constexpr (sizeof...(N) == 0) {
+        Vec<A + B> ret{};
+        for (int i = 0; i < A; ++i) ret[i] = a[i];
+        for (int i = 0; i < B; ++i) ret[i + A] = b[i];
+        return ret;
+    } else return concat_vec(concat_vec(a, b), args...);
 }
 
 } // namespace mne
