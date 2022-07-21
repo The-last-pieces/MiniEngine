@@ -32,21 +32,10 @@ public:
 #pragma region 构造相关
     constexpr Mat() = default;
 
-    constexpr Mat(const std::array<Vec<N>, M>& init) {
+    constexpr Mat(const std::initializer_list<Vec<N>>& init) {
         int i = 0;
         for (auto& row : init) {
             data[i++] = row;
-        }
-    }
-
-    constexpr Mat(std::initializer_list<std::initializer_list<number>> init) {
-        int i = 0;
-        for (auto& row : init) {
-            int j = 0;
-            for (auto elem : row) {
-                atc(i, j++) = elem;
-            }
-            i++;
         }
     }
 
@@ -196,7 +185,7 @@ public:
 
     // 特化Mat44 x Vec3
     constexpr Vec3 operator*(const Vec3& rhs) const requires(M == 4 && N == 4) {
-        return (*this * rhs.as<4>()).template as<3>();
+        return (*this * rhs.as<4>()).trim().template as<3>();
     }
 
 #pragma endregion
@@ -372,6 +361,43 @@ public:
         return merge(dz, scaleXYZ(sz), dz.invert());
     }
 
+    /**
+     * @brief 透视变换矩阵
+     * @param angle 视锥上下面之间的夹角
+     * @param aspect viewPort的宽高比
+     * @param n near面的距离
+     * @param f far面的距离
+     * @return
+     */
+    static inline Mat44 perspective(number angle, number aspect, number n, number f) {
+        number q = 1.0f / tan(0.5f * angle);
+        number A = q / aspect;
+        number B = (n + f) / (n - f);
+        number C = (2.0f * n * f) / (n - f);
+
+        return {
+            make_vec(A, 0, 0, 0),
+            make_vec(0, q, 0, 0),
+            make_vec(0, 0, -B, -1),
+            make_vec(0, 0, -C, 0)};
+    }
+
+    /**
+     * @brief 正交变换矩阵 Todo
+     */
+    static inline Mat44 ortho(number left, number right, number bottom, number top, number zNear, number zFar) {
+        //        return {
+        //            make_vec(2.0f / (right - left), 0.0f, 0.0f, 0.0f),
+        //            make_vec(0.0f, 2.0f / (top - bottom), 0.0f, 0.0f),
+        //            make_vec(0.0f, 0.0f, -2.0f / (zFar - zNear), 0.0f),
+        //            make_vec(-(right + left) / (right - left), -(top + bottom) / (top - bottom), -(zFar + zNear) / (zFar - zNear), 1.0f)};
+        number width = right - left, height = top - bottom, depth = zFar - zNear;
+        return {
+            make_vec(2 / width, 0, 0, -(right + left) / width),
+            make_vec(0, 2 / height, 0, -(top + bottom) / height),
+            make_vec(0, 0, -2 / depth, -(zFar + zNear) / depth),
+            make_vec(0, 0, 0, 1)};
+    }
 #pragma endregion
 };
 
