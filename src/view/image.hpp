@@ -158,7 +158,7 @@ public:
 
     // 通过进行插值的方式获取颜色信息 Todo
     Color getPixel(const Vec2& uv) const {
-        auto tmp = getPixel(int(uv.y() * number(h)), int(uv.x() * number(w)));
+        auto tmp = getPixel(int(uv.y() * number(h - 1)), int(uv.x() * number(w - 1)));
         return tmp.toColor();
     }
 
