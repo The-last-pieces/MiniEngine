@@ -1,6 +1,6 @@
 ﻿# Mini-Engine
 
-一个迷你的图形引擎 .
+一个迷你的图形引擎 , 后续可能加入物理引擎功能 .
 
 基于C++20开发 , CMake构建 . 核心内容不依赖外部库 .
 
@@ -10,7 +10,7 @@
 
 # 运行效果
 
-![](res/markdown/demo.png)
+![](res/markdown/demo2.png)
 
 # 成像方法
 
