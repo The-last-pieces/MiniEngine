@@ -2,12 +2,19 @@
 
 project(mini_engine)
 
+# 输出路径
+## exe
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/dist)
+## lib
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/dist)
+
 # 编译选项
+## 使用C++20标准
 set(CMAKE_CXX_STANDARD 20)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
     add_compile_options(-fconcepts)
 endif ()
-
+## 添加OpenMP选项
 FIND_PACKAGE(OpenMP REQUIRED)
 if (OPENMP_FOUND)
     message("OPENMP FOUND")
@@ -16,7 +23,10 @@ if (OPENMP_FOUND)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif ()
 
-# 输入文件
+# 拷贝资源文件
+file(COPY ./res DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+
+# 源文件集合
 set(SOURCE_FILES
         src/engine/camera.hpp
         src/engine/model.hpp
