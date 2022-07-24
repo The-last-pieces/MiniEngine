@@ -125,7 +125,7 @@ class TGAImage {
         }
     };
 
-#pragma pack(push, 1)
+#pragma pack(1)
     struct TGAHeader {
         std::uint8_t  idSize{};
         std::uint8_t  colorMapType{};
@@ -140,7 +140,7 @@ class TGAImage {
         std::uint8_t  bitsPerPixel{};
         std::uint8_t  imageDescriptor{};
     };
-#pragma pack(pop)
+#pragma pack()
 
 private:
     std::vector<std::uint8_t> data;
