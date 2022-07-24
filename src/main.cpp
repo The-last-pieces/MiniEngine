@@ -55,17 +55,21 @@ public:
 int main() {
     std::string_view paths[][2] = {
         {
-            R"(E:\vscode\MiniEngine\res\boggie\body.obj)",
-            R"(E:\vscode\MiniEngine\res\boggie\body_diffuse.tga)",
+            R"(res\boggie\body.obj)",
+            R"(res\boggie\body_diffuse.tga)",
         },
         {
-            R"(E:\vscode\MiniEngine\res\boggie\eyes.obj)",
-            R"(E:\vscode\MiniEngine\res\boggie\eyes_diffuse.tga)",
+            R"(res\boggie\eyes.obj)",
+            R"(res\boggie\eyes_diffuse.tga)",
         },
         {
-            R"(E:\vscode\MiniEngine\res\boggie\head.obj)",
-            R"(E:\vscode\MiniEngine\res\boggie\head_diffuse.tga)",
+            R"(res\boggie\head.obj)",
+            R"(res\boggie\head_diffuse.tga)",
         },
+        //        {
+//            R"(res\african_head\african_head.obj)",
+//            R"(res\african_head\african_head_diffuse.tga)",
+//        },
     };
 
     auto render = std::make_shared<Render>();
@@ -85,7 +89,7 @@ int main() {
         add_model(model);
     }
 
-    auto model    = std::make_shared<Model>(R"(E:\vscode\MiniEngine\.third_party\obj\floor.obj)");
+    auto model    = std::make_shared<Model>(R"(res\floor.obj)");
     model->shader = std::make_shared<VertexShader>();
     add_model(model);
 
