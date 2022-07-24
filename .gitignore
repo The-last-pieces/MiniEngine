@@ -5,3 +5,4 @@ third_party
 *build*
 out
 CMakeSettings.json
+dist
