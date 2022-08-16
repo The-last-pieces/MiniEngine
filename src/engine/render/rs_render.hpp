@@ -6,6 +6,7 @@
 #define MINI_ENGINE_RS_RENDER_HPP
 
 #include "../interface/shader.hpp"
+#include "../interface/render.hpp"
 #include "../math/mat.hpp"
 #include "../math/utils.hpp"
 #include "../store/image.hpp"
@@ -60,11 +61,7 @@ namespace mne {
    深度检测,透明度,阴影等.
  */
 
-class RsRender {
-public:
-    Camera camera; // 摄像机对象
-
-    std::vector<std::shared_ptr<Model>> models{}; // 要渲染的模型集合
+class RsRender: public IRender {
 private:
     BMPImage* canvas{};   // 当前渲染对象
     int       vh{}, vw{}; // 视口大小
@@ -86,7 +83,7 @@ public:
     RsRender() = default;
 
 public:
-    void drawAt(BMPImage& image) {
+    void drawAt(BMPImage& image) final {
         vh = camera.vh, vw = camera.vw;      // 视口大小
         canvas = &image, image.init(vh, vw); // 绑定画布
         camera.update();                     // 更新摄像机参数
