@@ -2,15 +2,15 @@
 // Created by MnZn on 2022/7/13.
 //
 
-#ifndef MINI_ENGINE_RENDER_HPP
-#define MINI_ENGINE_RENDER_HPP
+#ifndef MINI_ENGINE_RS_RENDER_HPP
+#define MINI_ENGINE_RS_RENDER_HPP
 
-#include "../view/image.hpp"
+#include "../interface/shader.hpp"
 #include "../math/mat.hpp"
 #include "../math/utils.hpp"
-#include "camera.hpp"
-#include "shader.hpp"
-#include "model.hpp"
+#include "../store/image.hpp"
+#include "../data/camera.hpp"
+#include "../store/model.hpp"
 #include <memory>
 
 /*
@@ -60,7 +60,7 @@ namespace mne {
    深度检测,透明度,阴影等.
  */
 
-class Render {
+class RsRender {
 public:
     Camera camera; // 摄像机对象
 
@@ -83,7 +83,7 @@ private:
     };
 
 public:
-    Render() = default;
+    RsRender() = default;
 
 public:
     void drawAt(BMPImage& image) {
@@ -135,7 +135,7 @@ private:
             auto min = tmp.v_min(), max = tmp.v_max();
             all_out = all_out && (min < -1 || max > 1);
         }
-        //if (all_out) return; //过滤
+        //if (all_out) return; // Todo 过滤
 
         // 缓存颜色
         std::array<Color, 3> colors{data[0].color, data[1].color, data[2].color};
@@ -209,7 +209,7 @@ private:
     void setPixel(int i, int j, const Color& fill, number z) {
 #ifndef NDEBUG
         if (i < 0 || i >= vh || j < 0 || j >= vw)
-            throw std::out_of_range("Render::setPixel");
+            throw std::out_of_range("RsRender::setPixel");
 #endif
         auto& ref = depth[i * vw + j];
         if (ref > z) {
@@ -306,4 +306,4 @@ private:
 
 } // namespace mne
 
-#endif //MINI_ENGINE_RENDER_HPP
+#endif //MINI_ENGINE_RS_RENDER_HPP

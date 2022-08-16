@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_MODEL_HPP
 #define MINI_ENGINE_MODEL_HPP
 
-#include "../view/image.hpp"
 #include "../math/mat.hpp"
+#include "image.hpp"
 #include <vector>
 #include <fstream>
 #include <sstream>

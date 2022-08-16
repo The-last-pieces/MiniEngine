@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_IMAGE_HPP
 #define MINI_ENGINE_IMAGE_HPP
 
-#include "color.hpp"
 #include "../math/vec.hpp"
+#include "../data/color.hpp"
 #include <vector>
 #include <fstream>
 #include <Windows.h>

@@ -5,15 +5,12 @@
 #ifndef MINI_ENGINE_SHADER_HPP
 #define MINI_ENGINE_SHADER_HPP
 
-#include <optional>
 #include "../math/mat.hpp"
-#include "../view/color.hpp"
+#include "../data/color.hpp"
 
 namespace mne {
 
-/**
- * @brief 着色器接口
- */
+// 着色器接口
 class IShader {
 public:
     /**

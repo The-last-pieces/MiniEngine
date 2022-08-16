@@ -5,7 +5,6 @@
 #ifndef MINI_ENGINE_UTILS_HPP
 #define MINI_ENGINE_UTILS_HPP
 
-#include "mat.hpp"
 #include <random>
 #include <ctime>
 
