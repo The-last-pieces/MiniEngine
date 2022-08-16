@@ -1,4 +1,5 @@
 ﻿#include "view/gui.hpp"
+#include "./engine/render/rs_render.hpp"
 
 using namespace mne;
 
@@ -67,12 +68,12 @@ int main() {
             R"(res\boggie\head_diffuse.tga)",
         },
         //        {
-//            R"(res\african_head\african_head.obj)",
-//            R"(res\african_head\african_head_diffuse.tga)",
-//        },
+        //            R"(res\african_head\african_head.obj)",
+        //            R"(res\african_head\african_head_diffuse.tga)",
+        //        },
     };
 
-    auto render = std::make_shared<Render>();
+    auto render = std::make_shared<RsRender>();
 
     auto add_model = [&](std::shared_ptr<Model>& model) {
         model->transform.scale      = {50, 50, 50};

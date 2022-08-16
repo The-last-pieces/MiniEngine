@@ -6,6 +6,7 @@
 #define MINI_ENGINE_MODEL_HPP
 
 #include "../math/mat.hpp"
+#include "../interface/shader.hpp"
 #include "image.hpp"
 #include <vector>
 #include <fstream>
