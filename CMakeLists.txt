@@ -28,17 +28,25 @@ file(COPY ./res DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
 # 源文件集合
 set(SOURCE_FILES
-        src/engine/camera.hpp
-        src/engine/model.hpp
-        src/engine/render.hpp
-        src/engine/shader.hpp
-        src/math/mat.hpp
-        src/math/utils.hpp
-        src/math/vec.hpp
-        src/view/color.hpp
+        src/engine/data/camera.hpp
+        src/engine/data/color.hpp
+        src/engine/store/image.hpp
+        src/engine/store/model.hpp
+
+        src/engine/interface/render.hpp
+        src/engine/interface/shader.hpp
+
+        src/engine/math/mat.hpp
+        src/engine/math/utils.hpp
+        src/engine/math/vec.hpp
+
+        src/engine/render/rs_render.hpp
+        src/engine/render/rt_render.hpp
+
         src/view/gui.hpp
-        src/view/image.hpp
-        src/main.cpp)
+
+        src/main.cpp
+        src/engine/store/texture.hpp)
 
 # 库目录, -L
 link_directories(${PROJECT_SOURCE_DIR}/lib)
