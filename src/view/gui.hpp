@@ -5,9 +5,8 @@
 #ifndef MINI_ENGINE_GUI_HPP
 #define MINI_ENGINE_GUI_HPP
 
-#include "image.hpp"
-#include "../math/mat.hpp"
-#include "../engine/render.hpp"
+#include "../engine/interface/render.hpp"
+#include "../engine/store/image.hpp"
 #include "GLFW/glfw3.h"
 #include <string>
 #include <ctime>
@@ -62,7 +61,7 @@ private:
     Color bg_color = {0, 0, 0};
 
 public:
-    MainWindow(std::string_view title, int width, int height, std::shared_ptr<Render> render):
+    MainWindow(std::string_view title, int width, int height, std::shared_ptr<IRender> render):
         title(title), width(width), height(height), render(std::move(render)) {
         glfwInit(); // 初始化
     }
@@ -106,8 +105,8 @@ public:
 protected:
     const int fps = 60;
 
-    BMPImage                image;
-    std::shared_ptr<Render> render{};
+    BMPImage                 image;
+    std::shared_ptr<IRender> render{};
 
     void update() {
         image.init(width, height);
