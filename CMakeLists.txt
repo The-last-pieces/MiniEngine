@@ -30,11 +30,25 @@ file(COPY ./res DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 set(SOURCE_FILES
         src/engine/data/camera.hpp
         src/engine/data/color.hpp
+        src/engine/data/ray.hpp
+        src/engine/data/scene.hpp
+
         src/engine/store/image.hpp
         src/engine/store/model.hpp
+        src/engine/store/texture.hpp
+
+        src/engine/accelerator/AABB.hpp
 
         src/engine/interface/render.hpp
         src/engine/interface/shader.hpp
+        src/engine/interface/material.hpp
+        src/engine/interface/object.hpp
+
+        src/engine/material/diffuse.hpp
+        src/engine/material/default.hpp
+
+        src/engine/objects/sphere.hpp
+        src/engine/objects/rectangle.hpp
 
         src/engine/math/mat.hpp
         src/engine/math/utils.hpp
@@ -45,8 +59,7 @@ set(SOURCE_FILES
 
         src/view/gui.hpp
 
-        src/main.cpp
-        src/engine/store/texture.hpp)
+        src/main.cpp)
 
 # 库目录, -L
 link_directories(${PROJECT_SOURCE_DIR}/lib)
