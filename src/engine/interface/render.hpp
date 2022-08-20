@@ -7,18 +7,20 @@
 
 #include "../store/image.hpp"
 #include "../data/camera.hpp"
-#include "../store/model.hpp"
+#include "../data/scene.hpp"
 
 namespace mne {
 // 渲染器接口,输入摄像机+光源+模型信息,输出图片
 class IRender {
 public:
-    Camera camera; // 摄像机对象
+    std::shared_ptr<Camera>   camera = std::make_shared<Camera>();   // 摄像机
+    std::shared_ptr<Scene>    scene  = std::make_shared<Scene>();    // 场景
+    std::shared_ptr<BMPImage> image  = std::make_shared<BMPImage>(); // 输出
 
-    std::vector<std::shared_ptr<Model>> models{}; // 要渲染的模型集合
+    int spp = 1; // 采样率(sample per pixel)
 
 public:
-    virtual void drawAt(BMPImage& image) = 0;
+    virtual void render() = 0;
 };
 } // namespace mne
 
