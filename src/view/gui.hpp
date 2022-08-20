@@ -11,6 +11,8 @@
 #include <string>
 #include <ctime>
 #include <queue>
+#include <thread>
+#include <mutex>
 #include <windows.h>
 
 #undef min
@@ -64,10 +66,20 @@ public:
     MainWindow(std::string_view title, int width, int height, std::shared_ptr<IRender> render):
         title(title), width(width), height(height), render(std::move(render)) {
         glfwInit(); // 初始化
+
+        // 创建渲染线程
+        thr = std::jthread([this] {
+            while (run) {
+                this->render->render();
+                std::unique_lock locker(lock);
+                image = *(this->render->image);
+            }
+        });
     }
 
     ~MainWindow() {
         glfwTerminate(); // 终止并释放GLFW资源
+        run = false;
     }
 
     // 阻塞直到窗口关闭
@@ -105,12 +117,15 @@ public:
 protected:
     const int fps = 60;
 
-    BMPImage                 image;
     std::shared_ptr<IRender> render{};
 
+    BMPImage         image;
+    std::mutex       lock;
+    std::jthread     thr;
+    std::atomic_bool run = true;
+
     void update() {
-        image.init(width, height);
-        if (render) render->drawAt(image);
+        std::unique_lock locker(lock);
         drawBMP(image);
     }
 
