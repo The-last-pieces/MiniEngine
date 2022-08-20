@@ -7,6 +7,7 @@
 
 #include "../math/vec.hpp"
 #include "../math/mat.hpp"
+#include "../data/ray.hpp"
 
 namespace mne {
 
@@ -50,6 +51,18 @@ private:
             Factory::translate(make_vec(vw / 2, vh / 2, 0)));
     }
 
+    // 视口坐标转世界坐标,dis为到near面的垂直距离
+    Vec3 loc2world(number i, number j, number dis) const {
+        number oh = i - number(vh) / number(2);
+        number ow = j - number(vw) / number(2);
+        Vec3   n = eye_dir, t = eye_norm, b = n.cross(t);
+        // p*n = dn , p*t = oh , p*b = ow
+        // (n ; t ; b) * p = (dn ; oh ; ow)
+        Mat33 mat = {n, t, b};
+        Vec3  p   = mat.invert() * make_vec(dn, oh, ow);
+        return eye_pos + (p - eye_pos) * ((dis + dn) / dn);
+    }
+
 public:
     // 更新缓存
     void update() {
@@ -69,6 +82,14 @@ public:
 
     // 视口变换矩阵,视口坐标转屏幕坐标
     const Mat44& getScreenMat() const { return screen_mat; }
+
+    // 从视口上某个坐标投射出一条射线和其最大射程,(i,j)在[0,vh]x[0,vw]内
+    std::pair<Ray, number> makeRay(number i, number j) const {
+        Vec3   pn = loc2world(i, j, 0), pf = loc2world(i, j, df - dn);
+        Vec3   dir  = (pn - eye_pos).normalize();
+        number tick = (pf - pn).x() / dir.x();
+        return {Ray{pn, dir}, tick};
+    }
 };
 
 } // namespace mne
