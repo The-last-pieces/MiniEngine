@@ -8,6 +8,7 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <numbers>
 
 namespace mne {
 
@@ -15,7 +16,7 @@ using number = float;
 
 constexpr number eps = 1e-8f;
 
-constexpr inline number pi = 3.14159265358979323846f;
+constexpr inline number pi = std::numbers::pi_v<number>;
 
 template<int N>
 requires(N >= 1) struct Vec {
