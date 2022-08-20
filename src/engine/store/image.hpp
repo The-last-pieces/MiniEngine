@@ -19,6 +19,9 @@ namespace mne {
 // 储存bmp图片
 class BMPImage {
 private:
+    BITMAPFILEHEADER bmpFile{}; // 文件头
+    BITMAPINFOHEADER bmpInfo{}; // 内容头
+
     std::vector<Color> data;
 
     int ih{}, iw{}; // 高宽
@@ -53,21 +56,44 @@ public:
         if (i < 0 || i >= ih || j < 0 || j >= iw)
             throw std::out_of_range("Color::setPixel");
 #endif
-        data[i * iw + j] = color;
+        data[i * iw + j] = color.clamp();
     }
 
-    void saveToDisk(std::string_view path) {
-        // 保存为bmp图片到硬盘中 Todo
-    }
-
-    static BMPImage loadFromDisk(std::string_view path) {
-        // 从硬盘中读取bmp图片
-        BITMAPFILEHEADER bmpFile; // 文件头
-        BITMAPINFOHEADER bmpInfo; // 内容头
-
+    // 将图片导入到硬盘
+    void saveToDisk(const std::string& path) {
         FILE* file;
-        if (!fopen_s(&file, path.data(), "rb")) return {};
+        if (fopen_s(&file, path.data(), "wb")) {
+            perror("fopen_s");
+        }
+        // 更新数据
+        bmpFile.bfSize  = sizeof(bmpFile) + sizeof(bmpInfo) + bmpInfo.biBitCount * ih * iw;
+        bmpInfo.biWidth = iw, bmpInfo.biHeight = -ih;
+        // 写入文件头
+        fwrite((char*) &bmpFile, sizeof(bmpFile), 1, file);
+        fwrite((char*) &bmpInfo, sizeof(bmpInfo), 1, file);
+        //保存像素数据
+        int h = ih, w = iw;
+        for (int i = h - 1; i >= 0; --i) {
+            for (int j = 0; j < w; ++j) {
+                Color   c       = getPixel(i, j) * 256;
+                uint8_t rgba[4] = {(uint8_t) c.b, (uint8_t) c.g, (uint8_t) c.r, 255};
+                fwrite((char*) rgba, 1, 4, file);
+            }
+        }
+        fclose(file);
+    }
 
+    // 从硬盘中读取bmp图片
+    static BMPImage loadFromDisk(const std::string& path) {
+        FILE* file;
+        if (fopen_s(&file, path.data(), "rb")) {
+            perror("fopen_s");
+            return {};
+        }
+
+        BMPImage image;
+        auto&    bmpFile = image.bmpFile;
+        auto&    bmpInfo = image.bmpInfo;
         // 读取文件头
         fread((char*) &bmpFile, sizeof(bmpFile), 1, file);
         fread((char*) &bmpInfo, sizeof(bmpInfo), 1, file);
@@ -78,9 +104,7 @@ public:
         int pixel_size  = bmpInfo.biBitCount / CHAR_BIT;
         int buffer_size = w * h * pixel_size;
 
-        BMPImage image(h, w);
-        auto*    buf = new uint8_t[buffer_size];
-
+        image.init(h, w);
         for (int i = h - 1; i >= 0; --i) {
             uint8_t rgba[4]{};
             for (int j = 0; j < w; ++j) {
@@ -90,7 +114,7 @@ public:
             }
         }
 
-        delete[] buf;
+        fclose(file);
         return image;
     }
 };
