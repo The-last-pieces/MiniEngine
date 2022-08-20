@@ -22,6 +22,16 @@ inline int randInt(int n) {
     return randInt(0, n);
 }
 
+// [0,1)
+inline number randFloat() {
+    return (number) randInt(RAND_MAX) / number(RAND_MAX);
+}
+
+// [l,r)
+inline number randFloat(number l, number r) {
+    return l + (r - l) * randFloat();
+}
+
 template<class T>
 inline T clamp(const T& l, const T& r, const T& v) {
     return std::max(l, std::min(r, v));
