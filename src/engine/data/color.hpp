@@ -6,6 +6,7 @@
 #define MINI_ENGINE_COLOR_HPP
 
 #include <cstdint>
+#include "../math/utils.hpp"
 
 /*
  提供颜色相关的api
@@ -15,6 +16,11 @@ namespace mne {
 struct Color {
     // 范围为[0,1]
     float r, g, b; // Todo 是否考虑alpha通道?
+
+    // 约束在[0,1]范围
+    Color clamp() const {
+        return {mne::clamp(0.0f, r, 1.0f), mne::clamp(0.0f, g, 1.0f), mne::clamp(0.0f, b, 1.0f)};
+    }
 
     // 颜色混合
     friend constexpr Color operator+(const Color& lhs, const Color& rhs) {
@@ -28,6 +34,11 @@ struct Color {
 
     friend constexpr Color operator*(float mut, const Color& rhs) {
         return rhs * mut;
+    }
+
+    // 按位乘
+    Color bitMut(Color oth) const {
+        return {r * oth.r, g * oth.g, b * oth.b};
     }
 
     // 数除
