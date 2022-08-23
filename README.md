@@ -1,12 +1,11 @@
 ﻿<p align="center">
-<img src="res/markdown/spp1w.bmp" alt="Logo" width="50%"><img src="res/markdown/demo2.png" alt="Logo" width="50%">
+<img src="res/markdown/spp5k.bmp" alt="Logo" width="50%"><img src="res/markdown/demo2.png" alt="Logo" width="50%">
 </p>
 <p align="center">
-软光线追踪渲染器 600p×600p | 10000spp
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-软光栅化渲染器 800px800px | 1w face
+(左)软光线追踪渲染器 600p×600p | 10000spp
+</p>
+<p align="center">
+(右)软光栅化渲染器 800px800px | 1w face
 </p>
 
 # Mini-Engine
