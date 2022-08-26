@@ -44,8 +44,9 @@ set(SOURCE_FILES
         src/engine/interface/material.hpp
         src/engine/interface/object.hpp
 
-        src/engine/material/diffuse.hpp
         src/engine/material/default.hpp
+        src/engine/material/diffuse.hpp
+        src/engine/material/mirror.hpp
 
         src/engine/objects/sphere.hpp
         src/engine/objects/rectangle.hpp
