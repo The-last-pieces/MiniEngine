@@ -7,11 +7,10 @@
 
 #include "../interface/shader.hpp"
 #include "../interface/render.hpp"
-#include "../math/mat.hpp"
 #include "../math/utils.hpp"
 #include "../store/image.hpp"
-#include "../data/camera.hpp"
 #include "../store/model.hpp"
+#include "../data/camera.hpp"
 #include <memory>
 
 /*
@@ -104,7 +103,7 @@ public:
             // 局部转世界空间
             auto model_mat = model->transform.get_matrix();
 
-            trans_mat     = Factory::merge(model_mat, view_mat, project_mat, screen_mat);
+            trans_mat     = MatUtils::merge(model_mat, view_mat, project_mat, screen_mat);
             trans_mat_inv = trans_mat.invert();
 
             // 渲染每个面

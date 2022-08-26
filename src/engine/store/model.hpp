@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_MODEL_HPP
 #define MINI_ENGINE_MODEL_HPP
 
-#include "../math/mat.hpp"
+#include "../math/utils.hpp"
 #include "../interface/shader.hpp"
 #include "image.hpp"
 #include <vector>
@@ -21,12 +21,12 @@ struct Transform {
     Vec3 scale{1, 1, 1};
 
     Mat44 get_matrix() const {
-        return Factory::merge(
-            Factory::rotateX(rotate.x()).as4(),
-            Factory::rotateY(rotate.y()).as4(),
-            Factory::rotateZ(rotate.z()).as4(),
-            Factory::scaleXYZ(scale).as4(),
-            Factory::translate(offset));
+        return MatUtils::merge(
+            MatUtils::rotateX(rotate.x()).as4(),
+            MatUtils::rotateY(rotate.y()).as4(),
+            MatUtils::rotateZ(rotate.z()).as4(),
+            MatUtils::scaleXYZ(scale).as4(),
+            MatUtils::translate(offset));
     }
 };
 
