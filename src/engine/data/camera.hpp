@@ -11,7 +11,16 @@
 
 namespace mne {
 
-// 摄像机
+/*
+右手坐标系约定 : 
++x为屏幕从左到右的方向
++y为屏幕从下到上的方向
++z为屏幕从里到外的方向    
+*/
+
+// Todo 将光栅化渲染器中使用的非标准相机替换为光追渲染器使用的标准相机
+
+// 非标准摄像机
 class Camera {
 public:
     Vec3 eye_pos{0, 0, -700}; // 视线位置
@@ -89,6 +98,41 @@ public:
         Vec3   dir  = (pn - eye_pos).normalize();
         number tick = (pf - pn).x() / dir.x();
         return {Ray{pn, dir}, tick};
+    }
+};
+
+// 标准摄像机
+class RtCamera {
+    Vec3 eye_pos;          // 摄像机位置
+    Vec3 view_right;       // 视图右方向(+x)
+    Vec3 view_up;          // 视图上方向(+y)
+    Vec3 view_left_bottom; // 视图的左下角(0,0)
+public:
+    RtCamera(
+        const Vec3& eye_pos,     // 摄像机的位置
+        const Vec3& target_pos,  // 观测点的位置,成像后位于图片中心
+        const Vec3& up_dir,      // 摄像机的上方 Todo up_dir和view_inner可能不垂直的问题
+        number      fov,         // 仰角的两倍,[0,pi/2]
+        number      aspect_ratio // 宽高比
+        ):
+        eye_pos(eye_pos) {
+        // 离eye_pos一个单位距离的视图宽高
+        number view_height = 2 * std::tan(fov / 2);
+        number view_width  = aspect_ratio * view_height;
+        // 求出三个标架
+        Vec3 view_inner = (target_pos - eye_pos).normalize(); // -z
+        view_up         = up_dir.normalize();                 // +y
+        view_right      = view_inner.cross(view_up);          // xy=z , yz=+x=-zy
+        // 求出宽高矢量
+        view_up *= view_height;
+        view_right *= view_width;
+        // 求出左下角
+        view_left_bottom = eye_pos + view_inner - view_right / 2_n - view_up / 2_n;
+    }
+
+    // 从视口上某个坐标投射出一条射线,(x,y)在[0,1]x[0,1]内
+    Ray makeRay(number x, number y) const {
+        return Ray{eye_pos, (view_left_bottom + view_right * x + view_up * y - eye_pos).normalize()};
     }
 };
 
