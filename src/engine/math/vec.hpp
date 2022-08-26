@@ -18,6 +18,13 @@ constexpr number eps = 1e-8f;
 
 constexpr inline number pi = std::numbers::pi_v<number>;
 
+constexpr number operator""_n(unsigned long long val) {
+    return number((long long) (val));
+}
+constexpr number operator""_n(long double val) {
+    return number(val);
+}
+
 template<int N>
 requires(N >= 1) struct Vec {
     number data[N] = {};
@@ -191,6 +198,7 @@ using Vec3 = Vec<3>;
 // 四元数
 using Vec4 = Vec<4>;
 
+// 创建向量
 template<class... Args>
 inline auto make_vec(Args&&... args) requires((std::is_nothrow_convertible_v<Args, number> && ...)) {
     return Vec<sizeof...(args)>{number(args)...};
