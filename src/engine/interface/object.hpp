@@ -38,10 +38,13 @@ public:
 
 public:
     // 随机在物体表面上采样一个点
-    virtual void sampleLight(LightResult& result) const {}
+    virtual void sampleLight(LightResult& result) const = 0;
+
+    // 表面积
+    virtual number area() const = 0;
 
     // sampleLight的概率密度,即1/表面积
-    virtual float PDF() const { return 0.f; }
+    number PDF() const { return 1_n / area(); }
 
     // 光线和物体的首个交点
     bool intersect(const Ray& ray, HitResult& hit) const {
