@@ -3,12 +3,13 @@
 #include "./engine/render/rt_render.hpp"
 #include "./engine/objects/rectangle.hpp"
 #include "./engine/objects/sphere.hpp"
+#include "./engine/material/mirror.hpp"
 
 using namespace mne;
 
 // 窗口尺寸
-const int SCR_WIDTH  = 800;
-const int SCR_HEIGHT = 800;
+const int SCR_WIDTH  = 720;
+const int SCR_HEIGHT = 720;
 
 // 转发纹理的shader
 class TextureShader: public IShader {
@@ -107,41 +108,54 @@ void testRtRender() {
     // 材质
     //材质
     //-------------------------------------------------------------
-    auto white = Color::fromRGB256(255, 255, 255);
+
+    //    auto redDiffuseMat = std::make_shared<MaterialDefault>(
+    //        Color{}, Color::fromRGB256(255, 0, 0));
+    //    auto greenDiffuseMat = std::make_shared<MaterialDefault>(
+    //        Color{}, Color::fromRGB256(0, 255, 0));
+    //    auto blueDiffuseMat = std::make_shared<MaterialDefault>(
+    //        Color{}, Color::fromRGB256(0, 0, 255));
+    //    auto whiteDiffuseMat = std::make_shared<MaterialDefault>(
+    //        Color{}, Color::fromRGB256(255, 255, 255));
+    //    auto lightMat = std::make_shared<MaterialDefault>(
+    //        Color::fromRGB256(255, 255, 255) * 50, Color{});
 
     auto redDiffuseMat = std::make_shared<MaterialDefault>(
-        Color{}, Color::fromRGB256(255, 0, 0));
+        Color{}, Color::fromRGB256(161, 16, 12));
     auto greenDiffuseMat = std::make_shared<MaterialDefault>(
-        Color{}, Color::fromRGB256(0, 255, 0));
+        Color{}, Color::fromRGB256(36, 115, 23));
     auto blueDiffuseMat = std::make_shared<MaterialDefault>(
         Color{}, Color::fromRGB256(0, 0, 255));
     auto whiteDiffuseMat = std::make_shared<MaterialDefault>(
-        Color{}, Color::fromRGB256(255, 255, 255));
+        Color{}, Color::fromRGB256(185, 181, 174));
     auto lightMat = std::make_shared<MaterialDefault>(
-        white * 150, Color{});
+        Color::fromRGB256(255, 255, 255) * 50, Color{});
+    auto mirrorMat = std::make_shared<MaterialMirror>(
+        Color{}, Color::fromRGB256(255, 255, 255) / 1);
 
     //坐标
     //-------------------------------------------------------------
-    const int scale = 3;
+    const int scale = 1;
+    const int rectW = 20;
 
-    Vec3 o  = scale * Vec3{0, -100 + 30, -60}; //球体坐标
-    Vec3 A  = scale * Vec3{-100, 100, 100};    // 矩形 Cornell Box 顶点坐标
-    Vec3 B  = scale * Vec3{-100, -100, 100};
-    Vec3 C  = scale * Vec3{100, -100, 100};
-    Vec3 D  = scale * Vec3{100, 100, 100};
-    Vec3 E  = scale * Vec3{-100, 100, -100};
-    Vec3 F  = scale * Vec3{-100, -100, -100};
-    Vec3 G  = scale * Vec3{100, -100, -100};
-    Vec3 H  = scale * Vec3{100, 100, -100};
-    Vec3 L1 = scale * Vec3{20, 99, 20 - 40}; // 矩形灯光顶点坐标
-    Vec3 L2 = scale * Vec3{-20, 99, 20 - 40};
-    Vec3 L3 = scale * Vec3{-20, 99, -20 - 40};
-    Vec3 L4 = scale * Vec3{20, 99, -20 - 40};
+    Vec3 o  = scale * make_vec(0, -100 + 40, 0); //球体坐标
+    Vec3 A  = scale * make_vec(-100, 100, 100);  // 矩形 Cornell Box 顶点坐标
+    Vec3 B  = scale * make_vec(-100, -100, 100);
+    Vec3 C  = scale * make_vec(100, -100, 100);
+    Vec3 D  = scale * make_vec(100, 100, 100);
+    Vec3 E  = scale * make_vec(-100, 100, -100);
+    Vec3 F  = scale * make_vec(-100, -100, -100);
+    Vec3 G  = scale * make_vec(100, -100, -100);
+    Vec3 H  = scale * make_vec(100, 100, -100);
+    Vec3 L1 = scale * make_vec(rectW, 99.999, rectW); // 矩形灯光顶点坐标
+    Vec3 L2 = scale * make_vec(-rectW, 99.999, rectW);
+    Vec3 L3 = scale * make_vec(-rectW, 99.999, -rectW);
+    Vec3 L4 = scale * make_vec(rectW, 99.999, -rectW);
 
     //物体
     //-------------------------------------------------------------
     // 球体
-    auto redSphere = std::make_shared<Sphere>(o, scale * 30.f, blueDiffuseMat);
+    auto redSphere = std::make_shared<Sphere>(o, scale * 30.f, mirrorMat);
     // Cornell Box
     auto bottomRectangle = std::make_shared<mne::Rectangle>(G, F, B, C, whiteDiffuseMat);
     auto topRectangle    = std::make_shared<mne::Rectangle>(H, D, A, E, whiteDiffuseMat);
@@ -166,17 +180,20 @@ void testRtRender() {
 
     //相机
     //-------------------------------------------------------------
-    auto camera = std::make_shared<Camera>();
+    auto camera = std::make_shared<RtCamera>(
+        make_vec(0, 0, 380),
+        make_vec(0, 0, 0),
+        make_vec(0, 1, 0),
+        number(atan2(100, 380 - 100) * 2),
+        number(SCR_WIDTH) / SCR_HEIGHT);
 
-    camera->eye_pos  = {0, 0, 500};
-    camera->eye_dir  = {0, 0, -1};
-    camera->eye_norm = {0, 1, 0};
-    camera->vh = camera->vw = 800;
+    auto render     = std::make_shared<RtRender>();
+    render->scene   = scene;
+    render->camera2 = camera;
+    render->spp     = 100;
 
-    auto render    = std::make_shared<RtRender>();
-    render->scene  = scene;
-    render->camera = camera;
-    render->spp    = 50;
+    render->camera->vh = SCR_HEIGHT;
+    render->camera->vw = SCR_WIDTH;
 
     constexpr bool ui = true;
     if constexpr (ui) {
