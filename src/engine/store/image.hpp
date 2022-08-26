@@ -64,6 +64,7 @@ public:
         FILE* file;
         if (fopen_s(&file, path.data(), "wb")) {
             perror("fopen_s");
+            return;
         }
         // 更新数据
         bmpFile.bfSize  = sizeof(bmpFile) + sizeof(bmpInfo) + bmpInfo.biBitCount * ih * iw;
@@ -75,7 +76,7 @@ public:
         int h = ih, w = iw;
         for (int i = h - 1; i >= 0; --i) {
             for (int j = 0; j < w; ++j) {
-                Color   c       = getPixel(i, j) * 256;
+                Color   c       = getPixel(i, j) * 255;
                 uint8_t rgba[4] = {(uint8_t) c.b, (uint8_t) c.g, (uint8_t) c.r, 255};
                 fwrite((char*) rgba, 1, 4, file);
             }
@@ -101,8 +102,6 @@ public:
 
         // 尺寸数据
         int w = bmpInfo.biWidth, h = -bmpInfo.biHeight;
-        int pixel_size  = bmpInfo.biBitCount / CHAR_BIT;
-        int buffer_size = w * h * pixel_size;
 
         image.init(h, w);
         for (int i = h - 1; i >= 0; --i) {
@@ -215,6 +214,7 @@ public:
             in.close();
         }
         // Todo 处理翻转
+
         //        if (!(header.imageDescriptor & 0x20))
         //            ; //flip_vertically();
         //        if (header.imageDescriptor & 0x10)
