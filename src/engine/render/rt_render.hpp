@@ -11,62 +11,75 @@
 namespace mne {
 // 基于光线追踪的渲染器
 class RtRender: public IRender {
-    std::atomic_int process = 0;
+    std::mutex      lock;
+    std::atomic_int process;
 
-    int total = 0;
+    int     total, vh, vw;
+    clock_t start;
 
     void initProcess() {
         process = 0;
-        total   = camera->vh * camera->vw;
+        total   = vh * vw;
+        start   = clock();
     }
 
     void updateProcess() {
-        int cur = process;
+        int cur = ++process;
         if (cur % 10000 == 0) {
-            printf("process : %.4f%% , (%d/%d)\n", (double) cur / total * 100, cur, total);
+            std::unique_lock locker(lock);
+            printf("process : %.4f%% , ", (double) cur / total * 100);
+            // speed = process / (clock() - start) , 1像素/ms
+            int  leave  = int(((double) (total - cur) * (clock() - start)) / (cur * 1000.0)); // 还剩多少秒
+            auto second = leave % 60;
+            auto minute = (leave / 60) % 60;
+            auto hour   = leave / 3600;
+            printf("leave : %02dh:%02dm:%02ds \n", hour, minute, second);
         }
-        ++process;
     }
 
 public:
     void render() final {
+        // 初始化输出缓冲区
+        vh = camera->vh, vw = camera->vw; // 视口大小
+        image->init(vh, vw);
         // 初始化进度
         initProcess();
         updateProcess();
-        // 初始化输出缓冲区
-        int vh = camera->vh,
-            vw = camera->vw; // 视口大小
-        image->init(vh, vw);
 
         // 枚举每个像素
 #pragma omp parallel for
-        for (int i = 0; i < vh; i++) {
+        for (int y = 0; y < vh; y++) {
 #pragma omp parallel for
-            for (int j = 0; j < vw; j++) {
-                image->setPixel(i, j, samplePixel(number(i), number(j)));
+            for (int x = 0; x < vw; x++) {
+                image->setPixel(y, x, samplePixel(number(x), number(y)));
                 updateProcess();
             }
         }
     }
 
+    std::shared_ptr<RtCamera> camera2;
+
 private:
-    Color samplePixel(number i, number j) {
+    Color samplePixel(number x, number y) {
         Color     sum{};
-        int       cnt{};
         HitResult hit;
-        // 在[i,i+1)x[j,j+1)内随机采样
         for (int k = 0; k < spp; ++k) {
-            number ri = i + randFloat(), rj = j + randFloat();
-            // 光线和限制长度
-            auto [ray, limit] = camera->makeRay(ri, rj);
+            // 在[x,x+1)x[y,y+1)内随机采样
+            auto [ox, oy] = sampleArea();
+            number sx = x + ox, sy = y + oy;
+            auto   ray = camera2->makeRay(sx / (number) vw, sy / (number) vh);
             // 检查和场景的碰撞
-            if (scene->rayCast(ray, hit)) { // && hit.tick < limit
-                Color tmp = scene->shade(-ray.dir, hit);
-                ++cnt, sum = sum + tmp;
-                //printf("hit at (%f,%f) (%f,%f,%f) , idx = %d\n", ri, rj, tmp.r, tmp.g, tmp.b, idx++);
+            if (scene->rayCast(ray, hit)) {
+                sum += scene->shade(-ray.dir, hit);
             }
         }
-        return cnt ? sum / number(cnt) : Color{};
+        return sum / number(spp);
+    }
+
+private:
+    // 在[0,1)x[0,1)中随机采样一个点
+    static std::pair<number, number> sampleArea() {
+        return {randFloat(), randFloat()};
     }
 };
 } // namespace mne
