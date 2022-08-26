@@ -40,19 +40,18 @@ public:
 public:
     // 随机在物体表面上采样一个点
     void sampleLight(LightResult& result) const final {
-        result.normal   = normal ;//* (randInt(0, 2) ? 1 : -1);
+        result.normal   = normal;
         result.emission = material->emission;
-        result.point    = center + wd * (randFloat(-0.5, 0.5) * w) + hd * (randFloat(-0.5, 0.5) * h);
+        result.point    = center + wd * (randFloat(-1_n, 1_n) * w) + hd * (randFloat(-1_n, 1_n) * h);
     }
 
-    // sampleLight的概率密度,即1/表面积
-    float PDF() const final { return 0.5f / (w * h); }
+    number area() const final { return 4_n * w * h; }
 
 protected:
     bool intersection(const Ray& ray, HitResult& hit) const final {
         // 先和平面求交
         number tick = ray.flat(center, normal);
-        if (tick < 0) return false;
+        if (tick < 0_n) return false;
         Vec3 p = ray.at(tick);
         // 求hw方向偏移
         number oh = std::abs(wd * (p - center));
