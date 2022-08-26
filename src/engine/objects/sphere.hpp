@@ -23,6 +23,18 @@ public:
             center + Vec3{radius, radius, radius}};
     }
 
+public:
+    // 随机在物体表面上采样一个点
+    void sampleLight(LightResult& result) const final {
+        result.normal   = VecUtils::sampleSphere();
+        result.point    = center + radius * result.normal;
+        result.emission = material->emission;
+    }
+
+    number area() const final {
+        return 4 * pi * radius * radius;
+    }
+
 protected:
     bool intersection(const Ray& ray, HitResult& hit) const final {
         Vec3   c = center, o = ray.pos, d = ray.dir, oc = o - c;
