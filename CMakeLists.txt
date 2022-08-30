@@ -4,9 +4,9 @@ project(mini_engine)
 
 # 输出路径
 ## exe
-SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/dist)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/build/dist)
 ## lib
-SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/dist)
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/dist)
 
 # 编译选项
 ## 使用C++20标准
@@ -24,7 +24,7 @@ if (OPENMP_FOUND)
 endif ()
 
 # 拷贝资源文件
-file(COPY ./res DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+file(COPY external/art DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
 # 源文件集合
 set(SOURCE_FILES
@@ -33,9 +33,8 @@ set(SOURCE_FILES
         src/engine/data/ray.hpp
         src/engine/data/scene.hpp
 
-        src/engine/store/image.hpp
+        src/engine/store/bmp.hpp
         src/engine/store/model.hpp
-        src/engine/store/texture.hpp
 
         src/engine/accelerator/AABB.hpp
 
@@ -43,10 +42,14 @@ set(SOURCE_FILES
         src/engine/interface/shader.hpp
         src/engine/interface/material.hpp
         src/engine/interface/object.hpp
+        src/engine/interface/texture.hpp
 
         src/engine/material/default.hpp
         src/engine/material/diffuse.hpp
         src/engine/material/mirror.hpp
+        src/engine/material/refraction.hpp
+        src/engine/material/micro.hpp
+        src/engine/material/disney.hpp
 
         src/engine/objects/sphere.hpp
         src/engine/objects/rectangle.hpp
@@ -58,15 +61,17 @@ set(SOURCE_FILES
         src/engine/render/rs_render.hpp
         src/engine/render/rt_render.hpp
 
+        src/engine/texture/mapping.hpp
+
         src/view/gui.hpp
 
         src/main.cpp)
 
 # 库目录, -L
-link_directories(${PROJECT_SOURCE_DIR}/lib)
+link_directories(external/lib)
 
 # 头文件目录, -I
-include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(external/include)
 
 # 源文件
 add_executable(main ${SOURCE_FILES})
