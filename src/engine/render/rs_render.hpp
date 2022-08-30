@@ -8,7 +8,7 @@
 #include "../interface/shader.hpp"
 #include "../interface/render.hpp"
 #include "../math/utils.hpp"
-#include "../store/image.hpp"
+#include "../store/bmp.hpp"
 #include "../store/model.hpp"
 #include "../data/camera.hpp"
 #include <memory>

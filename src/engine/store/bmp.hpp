@@ -2,8 +2,8 @@
 // Created by MnZn on 2022/7/13.
 //
 
-#ifndef MINI_ENGINE_IMAGE_HPP
-#define MINI_ENGINE_IMAGE_HPP
+#ifndef MINI_ENGINE_BMP_HPP
+#define MINI_ENGINE_BMP_HPP
 
 #include "../math/vec.hpp"
 #include "../data/color.hpp"
@@ -59,7 +59,7 @@ public:
         data[i * iw + j] = color.clamp();
     }
 
-    // 将图片导入到硬盘
+    // 将图片导入到硬盘 Todo 解决需要先load再save的问题
     void saveToDisk(const std::string& path) {
         FILE* file;
         if (fopen_s(&file, path.data(), "wb")) {
@@ -270,4 +270,4 @@ private:
 
 } // namespace mne
 
-#endif //MINI_ENGINE_IMAGE_HPP
+#endif //MINI_ENGINE_BMP_HPP

@@ -7,7 +7,7 @@
 
 #include "../math/utils.hpp"
 #include "../interface/shader.hpp"
-#include "image.hpp"
+#include "bmp.hpp"
 #include <vector>
 #include <fstream>
 #include <sstream>

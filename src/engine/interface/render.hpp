@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_RENDER_HPP
 #define MINI_ENGINE_RENDER_HPP
 
-#include "../store/image.hpp"
+#include "../store/bmp.hpp"
 #include "../data/camera.hpp"
 #include "../data/scene.hpp"
 

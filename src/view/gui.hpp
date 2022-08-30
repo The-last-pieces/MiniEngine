@@ -6,7 +6,7 @@
 #define MINI_ENGINE_GUI_HPP
 
 #include "../engine/interface/render.hpp"
-#include "../engine/store/image.hpp"
+#include "../engine/store/bmp.hpp"
 #include "GLFW/glfw3.h"
 #include <string>
 #include <ctime>
