@@ -60,20 +60,20 @@ public:
 void testRsRender() {
     std::string_view paths[][2] = {
         {
-            R"(res\boggie\body.obj)",
-            R"(res\boggie\body_diffuse.tga)",
+            R"(art\boggie\body.obj)",
+            R"(art\boggie\body_diffuse.tga)",
         },
         {
-            R"(res\boggie\eyes.obj)",
-            R"(res\boggie\eyes_diffuse.tga)",
+            R"(art\boggie\eyes.obj)",
+            R"(art\boggie\eyes_diffuse.tga)",
         },
         {
-            R"(res\boggie\head.obj)",
-            R"(res\boggie\head_diffuse.tga)",
+            R"(art\boggie\head.obj)",
+            R"(art\boggie\head_diffuse.tga)",
         },
         //        {
-        //            R"(res\african_head\african_head.obj)",
-        //            R"(res\african_head\african_head_diffuse.tga)",
+        //            R"(art\african_head\african_head.obj)",
+        //            R"(art\african_head\african_head_diffuse.tga)",
         //        },
     };
 
@@ -94,7 +94,7 @@ void testRsRender() {
         add_model(model);
     }
 
-    auto model    = std::make_shared<Model>(R"(res\floor.obj)");
+    auto model    = std::make_shared<Model>(R"(art\floor.obj)");
     model->shader = std::make_shared<VertexShader>();
     add_model(model);
 
@@ -202,7 +202,7 @@ void testRtRender() {
             SCR_WIDTH, SCR_HEIGHT, render);
         window.show();
     } else {
-        auto path      = R"(G:\projects\Clion\MiniEngine\out\out.bmp)";
+        auto path      = R"(..\demo\out.bmp)";
         *render->image = mne::BMPImage::loadFromDisk(path);
         render->render();
         render->image->saveToDisk(path);
