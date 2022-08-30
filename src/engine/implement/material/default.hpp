@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_DEFAULT_HPP
 #define MINI_ENGINE_DEFAULT_HPP
 
-#include "../material/diffuse.hpp"
+#include "diffuse.hpp"
 
 namespace mne {
 

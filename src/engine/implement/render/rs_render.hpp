@@ -5,12 +5,12 @@
 #ifndef MINI_ENGINE_RS_RENDER_HPP
 #define MINI_ENGINE_RS_RENDER_HPP
 
-#include "../interface/shader.hpp"
-#include "../interface/render.hpp"
-#include "../math/utils.hpp"
-#include "../store/bmp.hpp"
-#include "../store/model.hpp"
-#include "../data/camera.hpp"
+#include "../../interface/shader.hpp"
+#include "../../interface/render.hpp"
+#include "../../math/utils.hpp"
+#include "../../store/bmp.hpp"
+#include "../../store/model.hpp"
+#include "../../data/camera.hpp"
 #include <memory>
 
 /*

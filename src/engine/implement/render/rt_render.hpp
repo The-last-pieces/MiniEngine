@@ -5,8 +5,9 @@
 #ifndef MINI_ENGINE_RT_RENDER_HPP
 #define MINI_ENGINE_RT_RENDER_HPP
 
-#include "../interface/render.hpp"
+#include "../../interface/render.hpp"
 #include <iostream>
+#include <mutex>
 
 namespace mne {
 // 基于光线追踪的渲染器
