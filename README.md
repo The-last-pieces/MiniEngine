@@ -1,14 +1,4 @@
-﻿<p align="center">
-<img src="res/markdown/spp5k.bmp" alt="Logo" width="50%"><img src="res/markdown/demo2.png" alt="Logo" width="50%">
-</p>
-<p align="center">
-(左)软光线追踪渲染器 600p×600p | 10000spp
-</p>
-<p align="center">
-(右)软光栅化渲染器 800px800px | 1w face
-</p>
-
-# Mini-Engine
+﻿# Mini-Engine
 
 一个迷你的图形引擎 .
 
@@ -16,7 +6,22 @@
 
 实现了 光栅化 和 光线追踪 两种典型的渲染方法 .
 
-实现了 矩阵&向量库 , 变换矩阵生成 , 模型&纹理读取 , 反锯齿 , Shader , 阴影 等功能 .
+实现了 矩阵&向量库 , 变换矩阵生成 , 模型读取 , 纹理 , 材质 , 反锯齿 , Shader , 阴影 等功能 .
+
+# Demo
+
+## 光栅化
+
+![](docs/images/rs_demo1_1w.png)
+<div style="text-align: center;">boggie 1w face</div>
+
+## 光线追踪
+
+![](docs/images/rt_demo1_5k.bmp)
+<div style="text-align: center;">corner box 5w spp</div>
+
+![](docs/images/spp5k.bmp)
+<div style="text-align: center;">corner box 5w spp</div>
 
 # Feature
 
@@ -29,19 +34,85 @@
     - [x] 矩形
     - [ ] 三角形
 - [ ] 材质
-    - [x] 漫反射
-    - [ ] 镜面反射
+    - [x] 漫反射材质
+    - [x] 镜面材质
+    - [ ] 折射材质
+    - [ ] 微表面材质
+    - [ ] 迪士尼原则材质
+- [ ] 纹理
+    - [ ] 单色纹理
+    - [ ] 图片纹理
+    - [ ] 噪声纹理
 - [x] 渲染
     - [x] 光栅化
     - [x] 光线追踪
-    - [ ] 着色器
-- [ ] 加速算法
+    - [x] 着色器
+- [ ] 加速结构
     - [ ] 包围盒
     - [ ] 层次包围盒
-- [ ] 物理
+- [ ] 动力学
     - [ ] 碰撞检测
+    - [ ] 刚体模拟
     - [ ] 流体模拟
     - [ ] 布料模拟
+
+# 模块划分
+
+_**PS:此文件结构不一定与当前源码一致**_
+
+```
+- engine                 // 引擎相关
+  - math                 // 数学相关
+    - vec.hpp            // 提供向量运算
+    - mat.hpp            // 提供矩阵运算
+    - utils.hpp          // 提供随机数,向量,矩阵的工具类
+  - data                 // 数据相关:渲染中用到的POD类
+    - camera.hpp         // 管理摄像机属性
+    - color.hpp          // 提供颜色运算
+    - ray.hpp            // 提供射线定义
+  - store                // 存储相关,需要导入导出的资源文件
+    - bmp.hpp            // 读写BMP图片文件
+    - tga.hpp            // 读写TGA图片文件
+    - model.hpp          // 读写OBJ模型文件:包括顶点,图元,纹理信息
+    - scene.hpp          // 读写场景文件:装载摄像机和模型信息
+  - interface            // 接口相关
+    - material.hpp       // 物体材质:定义BRDF规则
+    - object.hpp         // 可渲染的图元:定义光线求交,包围盒计算规则
+    - render.hpp         // 渲染器:输入场景信息,输出图片
+    - shader.hpp         // 着色器:包括顶点着色器和片段着色器
+    - texture.hpp        // 纹理信息:定义根据uv采样的规则
+  - implement            // 接口的具体实现
+    - material           // 具体的材质实现
+      - default.hpp      // 默认材质:diffuse
+      - diffuse.hpp      // 漫反射材质
+      - mirror.hpp       // 镜面材质
+      - refract.hpp      // 折射材质
+      - micro.hpp        // 微表面材质
+      - disney.hpp       // 迪士尼标准材质
+    - objects            // 具体的图元实现
+      - sphere.hpp       // 球体
+      - rectangle.hpp    // 矩形
+      - triangle.hpp     // 三角形
+    - render             // 具体的渲染器实现
+      - rt_render.hpp    // 光线追踪渲染器
+      - rs_render.hpp    // 光栅化渲染器
+    - texture            // 具体的纹理实现
+      - mapping.hpp      // 图片映射纹理
+      - solid.hpp        // 单色纹理
+      - noise.hpp        // 噪声纹理
+  - accelerator          // 加速结构
+    - AABB.hpp           // 包围盒
+    - BVH.hpp            // 层次包围盒
+  - dynamics             // 动力学相关
+    - collision.hpp      // 碰撞检测算法
+    - simulation         // 物理模拟
+      - rigid.hpp        // 刚体模拟
+      - fluid.hpp        // 流体模拟
+      - cloth.hpp        // 布料模拟
+- view                   // 显示+控制层
+  - gui.hpp              // 负责实时呈现渲染结果
+- main.cpp               // 入口文件,负责程序参数的解析
+```
 
 # 成像方法
 
@@ -84,6 +155,10 @@
 - 累加两次计算的结果作为返回值
 - 显示图像
 
+### 实时光追
+
+To Implement ...
+
 # 着色器
 
 顶点着色器 :
@@ -105,47 +180,3 @@
   片元颜色
 - gl_Discard - out  
   是否丢弃片元,如果丢弃则使用顶点着色器的信息进行插值
-
-# 模块划分
-
-```
-- engine              // 引擎相关
-  - math              // 数学相关
-    - vec.hpp         // 提供向量(也可视为点)运算
-    - utils.hpp       // 提供常用的数学相关函数
-    - mat.hpp         // 提供矩阵运算
-  - data              // 数据相关,渲染中用到的杂项类
-    - camera.hpp      // 管理摄像机属性
-    - color.hpp       // 提供颜色运算
-    - ray.hpp         // 射线
-    - scene.hpp       // 管理图元的场景
-  - store             // 存储相关,需要导入导出的资源文件
-    - model.hpp       // 储存顶点,图元数据,可从文件加载
-    - image.hpp       // 储存BMP图片
-    - texture.hpp     // 储存纹理文件
-  - interface         // 接口相关
-    - shader.hpp      // 着色器,包括顶点着色器和片段着色器
-    - render.hpp      // 渲染器,输入摄像机+光源+模型信息,输出图片
-    - material.hpp    // 物体材质,定义BRDF和采样规则
-    - object.hpp      // 可渲染的图元,定义光线求交,光源采样等规则
-  - accelerator       // 加速结构
-    - AABB.hpp        // 包围盒
-    - BVH.hpp         // 层次包围盒
-  - material          // 具体的材质实现
-    - default.hpp     // 默认材质(diffuse)
-    - diffuse.hpp     // 漫反射材质
-  - objects           // 具体的图元实现
-    - sphere.hpp      // 球体
-    - rectangle.hpp   // 矩形
-  - physical          // 物理相关
-    - collision.hpp   // 碰撞检测算法
-    - simulation      // 动画与模拟
-      - fluid.hpp     // 布料模拟
-      - cloth.hpp     // 流体模拟
-  - render            // 渲染相关
-    - rt_render.hpp   // 光线追踪(Ray Tracing)渲染器,使用Path Tracing算法
-    - rs_render.hpp   // 光栅化(Rasterization)渲染器
-- view                // 显示+控制层
-  - gui.hpp           // 维护摄像机位置,实时渲染引擎输出并显示帧率
-- main.cpp            // 入口文件,负责程序参数的解析
-```
