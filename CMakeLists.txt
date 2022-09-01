@@ -44,24 +44,25 @@ set(SOURCE_FILES
         src/engine/interface/object.hpp
         src/engine/interface/texture.hpp
 
-        src/engine/material/default.hpp
-        src/engine/material/diffuse.hpp
-        src/engine/material/mirror.hpp
-        src/engine/material/refraction.hpp
-        src/engine/material/micro.hpp
-        src/engine/material/disney.hpp
+        src/engine/implement/material/default.hpp
+        src/engine/implement/material/diffuse.hpp
+        src/engine/implement/material/mirror.hpp
+        src/engine/implement/material/refraction.hpp
+        src/engine/implement/material/micro.hpp
+        src/engine/implement/material/disney.hpp
 
-        src/engine/objects/sphere.hpp
-        src/engine/objects/rectangle.hpp
+        src/engine/implement/objects/sphere.hpp
+        src/engine/implement/objects/rectangle.hpp
 
         src/engine/math/mat.hpp
         src/engine/math/utils.hpp
         src/engine/math/vec.hpp
 
-        src/engine/render/rs_render.hpp
-        src/engine/render/rt_render.hpp
+        src/engine/implement/render/rs_render.hpp
+        src/engine/implement/render/rt_render.hpp
 
-        src/engine/texture/mapping.hpp
+        src/engine/implement/texture/solid.hpp
+        src/engine/implement/texture/mapping.hpp
 
         src/view/gui.hpp
 
