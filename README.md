@@ -12,16 +12,26 @@
 
 ## 光栅化
 
-![](docs/images/rs_demo1_1w.png)
-<div style="text-align: center;">boggie 1w face</div>
+![](docs/images/demos/rs/triangle_1w.png)
+<p align="center">boggie 1w face</p>
 
 ## 光线追踪
 
-![](docs/images/rt_demo1_5k.bmp)
-<div style="text-align: center;">corner box 5w spp</div>
+<p align="center">
+<strong>
+diffuse material ; 5w spp
+</strong>
+</p>
 
-![](docs/images/spp5k.bmp)
-<div style="text-align: center;">corner box 5w spp</div>
+![](docs/images/demos/rt/diffuse_5k.bmp)
+
+<p align="center">
+<strong>
+mirror material ; 5w spp
+</strong>
+</p> 
+
+![](docs/images/demos/rt/mirror_500.bmp)
 
 # Feature
 
