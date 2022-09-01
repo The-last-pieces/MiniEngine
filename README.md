@@ -12,14 +12,19 @@
 
 ## 光栅化
 
+<p align="center">
+<strong>
+boggie 1w face
+</strong>
+</p>
+
 ![](docs/images/demos/rs/triangle_1w.png)
-<p align="center">boggie 1w face</p>
 
 ## 光线追踪
 
 <p align="center">
 <strong>
-diffuse material ; 5w spp
+diffuse material ; 5k spp
 </strong>
 </p>
 
@@ -27,11 +32,19 @@ diffuse material ; 5w spp
 
 <p align="center">
 <strong>
-mirror material ; 5w spp
+mirror material ; 500 spp
 </strong>
 </p> 
 
 ![](docs/images/demos/rt/mirror_500.bmp)
+
+<p align="center">
+<strong>
+image texture ; 5k spp
+</strong>
+</p> 
+
+![](docs/images/demos/rt/earth_5k.bmp)
 
 # Feature
 
@@ -43,6 +56,7 @@ mirror material ; 5w spp
     - [x] 球体
     - [x] 矩形
     - [ ] 三角形
+    - [ ] 模型
 - [ ] 材质
     - [x] 漫反射材质
     - [x] 镜面材质
@@ -57,6 +71,7 @@ mirror material ; 5w spp
     - [x] 光栅化
     - [x] 光线追踪
     - [x] 着色器
+    - [ ] 抗锯齿
 - [ ] 加速结构
     - [ ] 包围盒
     - [ ] 层次包围盒
