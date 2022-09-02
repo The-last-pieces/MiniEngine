@@ -45,23 +45,15 @@ protected:
         */
         number A = d.norm2(), B = 2 * oc * d, C = oc.norm2() - r * r;
         number delta = B * B - 4 * A * C;
-        if (delta < 0) return false; // 无解
+        if (delta < 0) return; // 无解
         number sq = std::sqrt(delta);
         number t1 = (-B - sq) / (2 * A), t2 = (-B + sq) / (2 * A);
 
-        if (t1 > 0) {
-            hit.tick = t1;
-        } else if (t2 > 0) {
-            hit.tick = t2;
-        } else {
-            return false;
-        }
+        if (!hit.setTick(t1, t2)) return;
 
-        Vec3 normal = ((hit.point = ray.at(hit.tick)) - center).normalize();
+        Vec3 normal = ((hit.point = hit.getPoint(ray)) - center).normalize();
         hit.setNormal(normal, ray);
         hit.uv = mapping_uv(normal);
-
-        return true;
     }
 };
 
