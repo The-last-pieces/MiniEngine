@@ -68,6 +68,10 @@ protected:
     AABB bbox; // 包围盒
 
     virtual bool intersection(const Ray& ray, HitResult& hit) const { return false; }
+
+    // 图元经历一个仿射变换,如果矩阵不是仿射变换则行为未定义
+    virtual void afterTransform(const Mat44& transform) {
+    }
 };
 
 } // namespace mne
