@@ -17,7 +17,7 @@ namespace mne {
 // RGB颜色
 struct Color {
     // 范围为[0,1]
-    number r, g, b; // Todo 是否考虑alpha通道?
+    number r, g, b;
 
     // 约束在[0,limit]范围
     constexpr Color clamp(number limit = 1_n) const {
@@ -78,6 +78,48 @@ struct Color {
         return {number(r) / div, number(g) / div, number(b) / div};
     }
 };
+
+// RGBA颜色
+struct ColorA {
+    number r, g, b, a;
+
+    constexpr ColorA() = default;
+
+    constexpr ColorA(number r, number g, number b, number a = 1_n):
+        r(r), g(g), b(b), a(a) {}
+
+    constexpr ColorA(const Color& color, number a = 1_n):
+        r(color.r), g(color.g), b(color.b), a(a) {}
+
+    // 和背景色混合获取真实颜色
+    constexpr Color mix(const Color& background = {}) const {
+        return background * (1_n - a) + rgb() * a;
+    }
+
+    // 直接转rgb
+    constexpr Color rgb() const {
+        return {r, g, b};
+    }
+
+    // 约束在[0,limit]范围
+    constexpr ColorA clamp(number limit = 1_n) const {
+        return {
+            mne::clamp(0_n, r, limit),
+            mne::clamp(0_n, g, limit),
+            mne::clamp(0_n, b, limit),
+            mne::clamp(0_n, a, limit)};
+    }
+
+    // +
+    friend constexpr ColorA
+    operator+(const ColorA& lhs, const ColorA& rhs) {
+        Color  c1 = lhs.rgb(), c2 = rhs.rgb();
+        number a1 = lhs.a, a2 = rhs.a, a12 = a1 + a2 - a1 * a2;
+        Color  c12 = (c1 * a1 * (1_n - a2) + c2 * a2) / (a1 + a2 - a1 * a2);
+        return {c12, a12};
+    }
+};
+
 } // namespace mne
 
 #endif //MINI_ENGINE_COLOR_HPP
