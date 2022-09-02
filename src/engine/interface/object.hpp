@@ -34,10 +34,7 @@ public:
     IObject() { setMaterial(nullptr); }
 
     // 是否为光源
-    bool isLight() const {
-        auto& emission = material->emission;
-        return emission.r > 0 || emission.g > 0 || emission.b > 0;
-    }
+    bool isLight() const { return material->isLight(); }
 
 public:
     // 光源重要性采样,随机在物体表面上采样一个点

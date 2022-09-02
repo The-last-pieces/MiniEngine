@@ -7,29 +7,39 @@
 
 #include "../data/color.hpp"
 #include "../math/vec.hpp"
+#include "../data/ray.hpp"
+#include "./texture.hpp"
 
 namespace mne {
 
+// in_dir和out_dir均为实际射线方向,不需要考虑关于normal的朝向
+
+struct BxDFResult {
+    Vec3   out_dir  = {};    // 出射方向
+    Color  albedo   = {};    // 光线出射率,即物体的颜色
+    number pdf      = 0_n;   // 概率密度
+    bool   specular = false; // 是否为反射或折射
+};
+
 struct IMaterial {
-public:
-    // 物体自身内部辐射的能量,即光源
-    Color emission{};
-    // 反射率系数,分别控制rgb的反射率,直观体现出来就是物体的颜色
-    Color albedo{};
+protected:
+    // 光源的纹理,即内部辐射的能量
+    std::shared_ptr<ITexture> emission;
 
 public:
-    IMaterial(const Color& _emission, const Color& _albedo):
-        emission(_emission), albedo(_albedo) {}
+    IMaterial(std::shared_ptr<ITexture> emission = nullptr):
+        emission(std::move(emission)) {}
 
 public:
-    // 随机采样一个方向 . light_dir为光线方向 , out_dir为观察方向 , normal为表面法线方向
-    virtual Vec3 sample(const Vec3& light_dir, const Vec3& out_dir, const Vec3& normal) const = 0;
+    // 光照信息
+    Color emit(const Vec2& uv) const { return emission ? emission->value(uv) : Color{}; }
 
-    // sample函数的概率密度 . dir为sample函数的返回值,normal为表面法线方向
-    virtual number PDF(const Vec3& dir, const Vec3& normal) const = 0;
+    // 是否为光源
+    bool isLight() const { return emission != nullptr; }
 
-    // 返回反射率 . in_dir为入射方向 , out_dir为出射方向 , normal为表面法线方向
-    virtual Color reflect(const Vec3& in_dir, const Vec3& out_dir, const Vec3& normal) const = 0;
+public:
+    // 进行BxDF采样 . in_dir为入射方向 , normal为碰撞点信息
+    virtual void sample(const Vec3& in_dir, const HitResult& hit, BxDFResult& bxdf) const {}
 };
 
 } // namespace mne
