@@ -32,7 +32,7 @@ public:
         const Vec2& gl_TexCoord,
         Color&      gl_FragColor,
         bool&       gl_Discard) final {
-        gl_FragColor = model.colorTexture.getPixel(gl_TexCoord);
+        gl_FragColor = model.colorTexture->value(gl_TexCoord);
     }
 };
 
@@ -88,8 +88,9 @@ void testRsRender() {
 
     for (auto [obj, tga] : paths) {
         std::shared_ptr<Model> model = std::make_shared<Model>(obj);
-        model->colorTexture.loadFromDisk(tga);
-        model->shader = std::make_shared<TextureShader>(std::ref(*model));
+
+        model->colorTexture = std::make_shared<TextureImage>(tga);
+        model->shader       = std::make_shared<TextureShader>(std::ref(*model));
 
         add_model(model);
     }

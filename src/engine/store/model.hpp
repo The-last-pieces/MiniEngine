@@ -7,7 +7,7 @@
 
 #include "../math/utils.hpp"
 #include "../interface/shader.hpp"
-#include "bmp.hpp"
+#include "../interface/texture.hpp"
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -46,7 +46,7 @@ public:
 
     Transform transform; // 模型自身的变换
 
-    TGAImage colorTexture; // 颜色纹理信息
+    std::shared_ptr<ITexture> colorTexture; // 颜色纹理信息
 
     std::shared_ptr<IShader> shader; // 模型的着色器
 
