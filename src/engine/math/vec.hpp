@@ -99,6 +99,21 @@ public:
         if (lhs.cdot(rhs) < 0) angle = 2 * pi - angle;
         return angle;
     }
+
+    // 按位乘法
+    constexpr Vec mut() const {
+        Vec ret;
+        for (int i = 0; i < N; ++i) ret[i] = data[i] * data[i];
+        return ret;
+    }
+
+    // 按位除法
+    constexpr Vec div(const Vec& rhs) const {
+        Vec ret;
+        for (int i = 0; i < N; ++i) ret[i] = data[i] / rhs[i];
+        return ret;
+    }
+
 #pragma endregion
 public:
 #pragma region 特化函数
