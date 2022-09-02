@@ -142,6 +142,27 @@ _**PS:此文件结构不一定与当前源码一致**_
 - main.cpp               // 入口文件,负责程序参数的解析
 ```
 
+## 其他文件
+
+```
+- docs                        // markdown文档相关
+  - images                    // markdown中引用的图片资源
+    - demos                   // demo图片
+- external                    // 第三方文件
+  - art                       // binary资源文件
+    - models                  // 模型资源
+    - texture                 // 纹理资源
+    - scenes                  // 场景资源
+  - include                   // 引入的头文件
+  - lib                       // 需要链接的静态库文件
+- src                         // 源码
+- .clang-format               // 控制代码格式
+- .gitattributes              // git项目属性
+- .gitignore                  // 忽略的文件
+- CMakeLists.txt              // 项目构建配置
+- README.md                   // 介绍文件
+```
+
 # 成像方法
 
 ## 光栅化
