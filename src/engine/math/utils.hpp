@@ -75,6 +75,19 @@ public:
         return std::max(l, std::min(r, v));
     }
 
+    // 线性插值, t \in [0,1]
+    template<class T>
+    static constexpr T lerp(const T& a, const T& b, number t) {
+        return a * (1 - t) + b * t;
+    }
+
+    // 浮点求膜 , 假定m > 0 , 返回[0, val)
+    static number mod(number val, number m) {
+        number ret = std::fmod(val, m);
+        if (ret < 0) ret += m;
+        return ret;
+    }
+
     // 弧度转角度
     static constexpr number rad2deg(number rad) {
         return rad * 180_n / pi;
