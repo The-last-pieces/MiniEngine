@@ -42,7 +42,7 @@ public:
     void render() final {
         // 初始化输出缓冲区
         vh = camera->vh, vw = camera->vw; // 视口大小
-        image->init(vh, vw);
+        image->resize(vw, vh);
         // 初始化进度
         initProcess();
         updateProcess();

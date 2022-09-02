@@ -8,7 +8,7 @@
 #include "../../interface/shader.hpp"
 #include "../../interface/render.hpp"
 #include "../../math/utils.hpp"
-#include "../../store/bmp.hpp"
+#include "../../store/image.hpp"
 #include "../../store/model.hpp"
 #include "../../data/camera.hpp"
 #include <memory>
@@ -83,7 +83,7 @@ public:
 public:
     void render() final {
         vh = camera->vh, vw = camera->vw; // 视口大小
-        image->init(vh, vw);              // 绑定画布
+        image->resize(vw, vh);            // 绑定画布
         camera->update();                 // 更新摄像机参数
 
         // 初始化深度缓存
