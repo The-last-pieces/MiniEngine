@@ -10,10 +10,13 @@
 #include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "STB/stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
+#include "STB/stb_image_write.h"
+
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "STB/stb_image_resize.h"
 
 namespace mne {
 
@@ -92,6 +95,23 @@ public:
         } else return false;
     }
 
+    Image scale(int nw, int nh) const {
+        auto buf_in = generateBuffer();
+        auto iw = width, ih = height;
+        auto ow = nw, oh = nh;
+        auto buf_out = std::vector<stbi_uc>(ow * oh * bpp);
+
+        stbir_resize(buf_in.data(), iw, ih, 0, buf_out.data(), ow, oh, 0,
+                     STBIR_TYPE_UINT8, bpp, STBIR_ALPHA_CHANNEL_NONE, 0,
+                     STBIR_EDGE_CLAMP, STBIR_EDGE_CLAMP,
+                     STBIR_FILTER_BOX, STBIR_FILTER_BOX,
+                     STBIR_COLORSPACE_SRGB, nullptr);
+
+        Image scaled;
+        scaled.loadBuffer(buf_out.data(), ow, oh);
+        return scaled;
+    }
+
 public:
     int getWidth() const { return width; }
 
@@ -123,11 +143,6 @@ public:
 #endif
         data[x * height + y] = color.clamp();
     }
-
-private:
-    std::vector<Color> data;
-
-    int width{}, height{};
 };
 
 } // namespace mne
