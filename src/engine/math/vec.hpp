@@ -9,14 +9,15 @@
 #include <algorithm>
 #include <iostream>
 #include <numbers>
+#include <limits>
 
 namespace mne {
 
 using number = float;
 
 constexpr number eps = 1e-8f;
-
-constexpr inline number pi = std::numbers::pi_v<number>;
+constexpr number inf = std::numeric_limits<number>::infinity();
+constexpr number pi  = std::numbers::pi_v<number>;
 
 constexpr number operator""_n(unsigned long long val) {
     return number((long long) (val));
