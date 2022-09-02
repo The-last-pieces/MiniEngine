@@ -19,8 +19,8 @@ public:
 
     void sample(const Vec3& in_dir, const HitResult& hit, BxDFResult& bxdf) const final {
         bxdf.specular = true;
-        bxdf.out_dir  = VecUtils::flapByVec(-in_dir, hit.normal);             // 镜面反射
-        bxdf.albedo   = (albedo / (bxdf.out_dir * hit.normal + eps)).clamp(); // 菲涅尔效应
+        bxdf.out_dir  = VecUtils::flapByVec(-in_dir, hit.normal);                // 镜面反射
+        bxdf.albedo   = (albedo / (bxdf.out_dir * hit.normal + eps)).clamp(3_n); // 菲涅尔效应
         bxdf.pdf      = 1_n;
     }
 };
