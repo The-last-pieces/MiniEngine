@@ -22,9 +22,13 @@ if (OPENMP_FOUND)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif ()
+## 关闭_s警告
+if (MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif ()
 
 # 拷贝资源文件
-file(COPY external/art DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+file(COPY ./external/art DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
 # 源文件集合
 set(SOURCE_FILES
@@ -33,7 +37,7 @@ set(SOURCE_FILES
         src/engine/data/ray.hpp
         src/engine/data/scene.hpp
 
-        src/engine/store/bmp.hpp
+        src/engine/store/image.hpp
         src/engine/store/model.hpp
 
         src/engine/accelerator/AABB.hpp
@@ -63,6 +67,9 @@ set(SOURCE_FILES
 
         src/engine/implement/texture/solid.hpp
         src/engine/implement/texture/mapping.hpp
+
+        src/engine/tools/average.hpp
+        src/engine/tools/process.hpp
 
         src/view/gui.hpp
 
