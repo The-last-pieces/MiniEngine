@@ -43,13 +43,15 @@ public:
     // 表面积
     virtual number area() const = 0;
 
+public:
     // sampleLight的概率密度,即1/表面积
     number PDF() const { return 1_n / area(); }
 
     // 光线和物体的首个交点
     bool intersect(const Ray& ray, HitResult& hit) const {
-        bool ret = bbox.intersect(ray) && intersection(ray, hit);
-        hit.obj  = ret ? this : nullptr;
+        hit.success = false;
+        bool ret    = bbox.intersect(ray) && (intersection(ray, hit), hit.success);
+        hit.obj     = ret ? this : nullptr;
         return ret;
     }
 
@@ -75,7 +77,7 @@ public:
 protected:
     AABB bbox; // 包围盒
 
-    virtual bool intersection(const Ray& ray, HitResult& hit) const { return false; }
+    virtual void intersection(const Ray& ray, HitResult& hit) const {}
 
     // 图元经历一个仿射变换,如果矩阵不是仿射变换则行为未定义
     virtual void afterTransform(const Mat44& transform) {
