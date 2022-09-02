@@ -1,9 +1,10 @@
-﻿#include "view/gui.hpp"
-#include "./engine/render/rs_render.hpp"
-#include "./engine/render/rt_render.hpp"
-#include "./engine/objects/rectangle.hpp"
-#include "./engine/objects/sphere.hpp"
-#include "./engine/material/mirror.hpp"
+﻿#include "./engine/implement/render/rs_render.hpp"
+#include "./engine/implement/render/rt_render.hpp"
+#include "./engine/implement/objects/rectangle.hpp"
+#include "./engine/implement/objects/sphere.hpp"
+#include "./engine/implement/material/mirror.hpp"
+#include "./engine/implement/texture/mapping.hpp"
+#include "view/gui.hpp"
 
 using namespace mne;
 
