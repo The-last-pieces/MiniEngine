@@ -6,17 +6,13 @@
 #define MINI_ENGINE_GUI_HPP
 
 #include "../engine/interface/render.hpp"
-#include "../engine/store/bmp.hpp"
+#include "../engine/store/image.hpp"
 #include "GLFW/glfw3.h"
 #include <string>
 #include <ctime>
 #include <queue>
 #include <thread>
 #include <mutex>
-#include <windows.h>
-
-#undef min
-#undef max
 
 namespace mne {
 
@@ -101,7 +97,8 @@ public:
             update();                // 更新ui
             glfwSwapBuffers(window); // 实现双缓冲
 
-            if (clock() < stop) Sleep(stop - clock());
+            // Todo 将帧率计算移动到渲染线程中
+            if (clock() < stop) std::this_thread::sleep_for(std::chrono::milliseconds(stop - clock()));
             stop = clock();
 
             ave_fps += stop - start;
