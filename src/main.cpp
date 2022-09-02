@@ -81,8 +81,6 @@ void testRsRender() {
 
     auto add_model = [&](std::shared_ptr<Model>& model) {
         model->transform.scale      = {50, 50, 50};
-        model->transform.rotate.y() = pi;
-        model->transform.rotate.z() = -pi / 2;
         render->scene->models.push_back(model);
     };
 
