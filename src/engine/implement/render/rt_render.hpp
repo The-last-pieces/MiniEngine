@@ -56,7 +56,7 @@ private:
 
     // 在[0,1)x[0,1)中随机采样一个点
     static std::pair<number, number> sampleArea() {
-        return {randFloat(), randFloat()};
+        return {RandomUtils::randFloat(), RandomUtils::randFloat()};
     }
 
 private:
@@ -144,7 +144,7 @@ private:
     const IObject& selectLight() const {
         std::vector<number> areas;
         for (auto& ptr : scene->objects) areas.push_back(ptr->isLight() ? ptr->area() : 0_n);
-        return *(scene->objects[randChoose(areas)]);
+        return *(scene->objects[RandomUtils::randChoose(areas)]);
     }
 
     // 返回光源采样的pdf

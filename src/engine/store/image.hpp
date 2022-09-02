@@ -92,8 +92,8 @@ public:
 public:
     // Todo 二次插值获取像素信息
     Color getPixel(const Vec2& uv) const {
-        int x = clamp(0, int(uv.x() * number(width - 1)), width - 1);
-        int y = clamp(0, int(uv.y() * number(height - 1)), height - 1);
+        int x = MathUtils::clamp(0, int(uv.x() * number(width - 1)), width - 1);
+        int y = MathUtils::clamp(0, int(uv.y() * number(height - 1)), height - 1);
         return getPixel(x, y);
     }
 

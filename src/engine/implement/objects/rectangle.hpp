@@ -41,7 +41,7 @@ public:
     // 随机在物体表面上采样一个点
     void sampleLight(LightResult& result) const final {
         result.normal = normal;
-        result.point  = center + wd * (randFloat(-1_n, 1_n) * w) + hd * (randFloat(-1_n, 1_n) * h);
+        result.point  = center + wd * (RandomUtils::randFloat(-1_n, 1_n) * w) + hd * (RandomUtils::randFloat(-1_n, 1_n) * h);
         result.uv     = mapping_uv(result.point);
     }
 

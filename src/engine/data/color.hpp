@@ -22,9 +22,9 @@ struct Color {
     // 约束在[0,limit]范围
     constexpr Color clamp(number limit = 1_n) const {
         return {
-            mne::clamp(0_n, r, limit),
-            mne::clamp(0_n, g, limit),
-            mne::clamp(0_n, b, limit)};
+            MathUtils::clamp(0_n, r, limit),
+            MathUtils::clamp(0_n, g, limit),
+            MathUtils::clamp(0_n, b, limit)};
     }
 
     // 颜色混合
@@ -104,10 +104,10 @@ struct ColorA {
     // 约束在[0,limit]范围
     constexpr ColorA clamp(number limit = 1_n) const {
         return {
-            mne::clamp(0_n, r, limit),
-            mne::clamp(0_n, g, limit),
-            mne::clamp(0_n, b, limit),
-            mne::clamp(0_n, a, limit)};
+            MathUtils::clamp(0_n, r, limit),
+            MathUtils::clamp(0_n, g, limit),
+            MathUtils::clamp(0_n, b, limit),
+            MathUtils::clamp(0_n, a, limit)};
     }
 
     // +

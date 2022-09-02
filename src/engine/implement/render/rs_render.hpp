@@ -188,7 +188,7 @@ private:
                 bool  discard = false; // 是否弃用
 
                 // 将uv坐标约束到[0,1]范围内
-                for (int t = 0; t < 2; ++t) tex[t] = clamp<number>(0, tex[t], 1);
+                for (int t = 0; t < 2; ++t) tex[t] = MathUtils::clamp(0_n, tex[t], 1_n);
                 // 执行片元着色器
                 shader->fragment(rawPoint, tex, color, discard);
                 if (discard) {
