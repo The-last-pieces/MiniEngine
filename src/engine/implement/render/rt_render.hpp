@@ -49,10 +49,10 @@ public:
 
         // 枚举每个像素
 #pragma omp parallel for
-        for (int y = 0; y < vh; y++) {
+        for (int x = 0; x < vw; x++) {
 #pragma omp parallel for
-            for (int x = 0; x < vw; x++) {
-                image->setPixel(y, x, samplePixel(number(x), number(y)));
+            for (int y = 0; y < vh; y++) {
+                image->setPixel(x, y, samplePixel(number(x), number(y)));
                 updateProcess();
             }
         }
