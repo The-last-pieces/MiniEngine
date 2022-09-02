@@ -116,7 +116,7 @@ protected:
 
     std::shared_ptr<IRender> render{};
 
-    BMPImage         image;
+    Image            image;
     std::mutex       lock;
     std::jthread     thr;
     std::atomic_bool run = true;
@@ -136,15 +136,15 @@ protected:
     }
 
     // 绘制BMP图
-    static void drawBMP(const BMPImage& image) {
+    static void drawBMP(const Image& image) {
         ModeGuard guard(GL_POINTS);
-        auto [w, h] = image.size();
+        auto [w, h] = image.getWH();
         auto fw = number(w), fh = number(h);
         for (int i = 0; i < w; i++) {
-            auto y = number(i) / fh * 2 - 1;
+            auto x = number(i) / fw * 2 - 1;
             for (int j = 0; j < h; j++) {
                 auto [r, g, b] = image.getPixel(i, j);
-                auto x         = number(j) / fw * 2 - 1;
+                auto y         = number(j) / fh * 2 - 1;
                 glColor3f(r, g, b);
                 glVertex2f(x, y);
             }
