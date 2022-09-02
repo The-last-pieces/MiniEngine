@@ -13,9 +13,9 @@ namespace mne {
 
 // 光源在某个点周围面积的采样结果
 struct LightResult {
-    Color emission{}; // 辐射率
-    Vec3  normal{};   // 法线
-    Vec3  point{};    // 坐标
+    Vec3 normal{}; // 表面法线
+    Vec3 point{};  // 采样坐标
+    Vec2 uv;       // 纹理坐标
 };
 
 class IObject {
@@ -37,7 +37,7 @@ public:
     }
 
 public:
-    // 随机在物体表面上采样一个点
+    // 光源重要性采样,随机在物体表面上采样一个点
     virtual void sampleLight(LightResult& result) const = 0;
 
     // 表面积
