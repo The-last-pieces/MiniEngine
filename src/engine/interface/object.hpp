@@ -7,7 +7,7 @@
 
 #include "../accelerator/AABB.hpp"
 #include "../data/ray.hpp"
-#include "../material/default.hpp"
+#include "../implement/material/default.hpp"
 
 namespace mne {
 
@@ -19,8 +19,16 @@ struct LightResult {
 };
 
 class IObject {
-public:
+protected:
     std::shared_ptr<IMaterial> material{}; // 物体的材质
+
+    void setMaterial(std::shared_ptr<IMaterial> mat) {
+        if (!mat) mat = std::make_shared<MaterialDefault>();
+        material = std::move(mat);
+    }
+
+public:
+    const IMaterial& matRef() const { return *material; }
 
 public:
     IObject(std::shared_ptr<IMaterial> _mat):
