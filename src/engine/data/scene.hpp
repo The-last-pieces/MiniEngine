@@ -36,10 +36,22 @@ public:
     }
 
 private:
-    // Todo 按面积等概率选择光源
-    // Todo 返回pdf
+    // 按面积比决定概率比然后选择光源
     const IObject& selectLight() const {
-        return (*objects.back());
+        std::vector<number> areas;
+        for (auto& ptr : objects) areas.push_back(ptr->isLight() ? ptr->area() : 0_n);
+        return *(objects[randChoose(areas)]);
+    }
+
+    // 返回光源采样的pdf
+    number lightPDF() const {
+        number areaSum = 0_n;
+        for (auto& ptr : objects) {
+            if (ptr->isLight()) {
+                areaSum += ptr->area();
+            }
+        }
+        return 1_n / areaSum;
     }
 
 public:
