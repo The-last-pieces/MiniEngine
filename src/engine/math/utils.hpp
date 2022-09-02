@@ -9,48 +9,82 @@
 #include <ctime>
 #include "../math/vec.hpp"
 #include "../math/mat.hpp"
+#include <concepts>
 
 namespace mne {
 
+/// 随机数工具函数
+class RandomUtils {
+public:
+    // [l,r)
+    static int randInt(int l, int r) {
+        static auto seed  = 0;                  // time(nullptr);
+        static auto maker = std::mt19937(seed); // NOLINT(cert-msc51-cpp)
+        return int(maker() % (r - l)) + l;
+    }
+
+    // [0,n)
+    static int randInt(int n) {
+        return randInt(0, n);
+    }
+
+    // [0,1)
+    static number randFloat() {
+        return (number) randInt(RAND_MAX) / number(RAND_MAX);
+    }
+
+    // [l,r)
+    static number randFloat(number l, number r) {
+        return l + (r - l) * randFloat();
+    }
+
+    // 随机bool , per的概率返回true
+    static bool randBool(number per) {
+        return randFloat() < per;
+    }
+
+    // 随机选择一个下标
+    template<class Iterable>
+    static int randChoose(const Iterable& seq)
+        requires requires(Iterable obj) {
+        std::begin(obj);
+        std::end(obj);
+    }
+    &&std::is_convertible_v<std::iter_value_t<Iterable>, number> {
+        int    idx = 0;
+        number sum = 0, pb = 0, rd = randFloat();
+        for (auto& v : seq) {
+            if (v < 0) throw std::runtime_error("probability can less than 0");
+            sum += v;
+        }
+        for (auto& v : seq) {
+            pb += v / sum;
+            if (pb > rd) break;
+            ++idx;
+        }
+        return idx;
+    }
+};
+
 /// 通用工具函数
+class MathUtils {
+public:
+    // 约束v到[l,r]区间
+    template<class T>
+    static constexpr T clamp(const T& l, const T& v, const T& r) {
+        return std::max(l, std::min(r, v));
+    }
 
-// [l,r)
-inline int randInt(int l, int r) {
-    static auto seed  = 0;                  // time(nullptr);
-    static auto maker = std::mt19937(seed); // NOLINT(cert-msc51-cpp)
-    return int(maker() % (r - l)) + l;
-}
+    // 弧度转角度
+    static constexpr number rad2deg(number rad) {
+        return rad * 180_n / pi;
+    }
 
-// [0,n)
-inline int randInt(int n) {
-    return randInt(0, n);
-}
-
-// [0,1)
-inline number randFloat() {
-    return (number) randInt(RAND_MAX) / number(RAND_MAX);
-}
-
-// [l,r)
-inline number randFloat(number l, number r) {
-    return l + (r - l) * randFloat();
-}
-
-// 约束v到[l,r]区间
-template<class T>
-constexpr T clamp(const T& l, const T& v, const T& r) {
-    return std::max(l, std::min(r, v));
-}
-
-// 弧度转角度
-constexpr number rad2deg(number rad) {
-    return rad * 180_n / pi;
-}
-
-// 角度转弧度
-constexpr number deg2rad(number deg) {
-    return deg * pi / 180_n;
-}
+    // 角度转弧度
+    static constexpr number deg2rad(number deg) {
+        return deg * pi / 180_n;
+    }
+};
 
 /// Vec的工具函数
 class VecUtils {
@@ -70,13 +104,13 @@ public:
     // 在单位球上均匀采样
     static Vec3 sampleSphere() {
         // https://blog.csdn.net/yjr3426619/article/details/102706968
-        number a = randFloat(), b = randFloat();
+        number a = RandomUtils::randFloat(), b = RandomUtils::randFloat();
         // 随机生成转角和仰角
         number phi = 2 * pi * a, theta = acos(b);
         number x = cos(theta) * cos(phi);
         number y = cos(theta) * sin(phi);
         number z = sin(theta);
-        if (randInt(2)) z = -z;
+        if (RandomUtils::randBool(50)) z = -z;
         return make_vec(x, y, z);
     }
 
@@ -92,9 +126,9 @@ public:
 
     // 在法线为n的半球采样,概率密度为dir*n/pi
     static Vec3 sampleHalfSphere(Vec3 n) {
-        number phi    = 2 * pi * randFloat();
-        number z      = std::fabs(1.0f - 2 * randFloat()); //[0,1]
-        number radius = std::sqrt(1.0f - z * z);           //[0,1]
+        number phi    = 2 * pi * RandomUtils::randFloat();
+        number z      = std::fabs(1.0f - 2 * RandomUtils::randFloat());
+        number radius = std::sqrt(1.0f - z * z);
 
         number x = radius * std::cos(phi);
         number y = radius * std::sin(phi);
@@ -102,6 +136,14 @@ public:
         // Todo 转换到世界坐标系意义注释
         return toWorld(make_vec(x, y, z), n);
     }
+
+public:
+    static constexpr Vec3 up    = make_vec(0, 1, 0);
+    static constexpr Vec3 down  = make_vec(0, -1, 0);
+    static constexpr Vec3 left  = make_vec(-1, 0, 0);
+    static constexpr Vec3 right = make_vec(1, 0, 0);
+    static constexpr Vec3 front = make_vec(0, 0, 1);
+    static constexpr Vec3 back  = make_vec(0, 0, -1);
 };
 
 // 矩阵相关的工厂函数
