@@ -6,37 +6,12 @@
 #define MINI_ENGINE_RT_RENDER_HPP
 
 #include "../../interface/render.hpp"
-#include <iostream>
-#include <mutex>
+#include "../../tools/process.hpp"
 
 namespace mne {
 // 基于光线追踪的渲染器
 class RtRender: public IRender {
-    std::mutex      lock;
-    std::atomic_int process;
-
-    int     total, vh, vw;
-    clock_t start;
-
-    void initProcess() {
-        process = 0;
-        total   = vh * vw;
-        start   = clock();
-    }
-
-    void updateProcess() {
-        int cur = ++process;
-        if (cur % 10000 == 0) {
-            std::unique_lock locker(lock);
-            printf("process : %.4f%% , ", (double) cur / total * 100);
-            // speed = process / (clock() - start) , 1像素/ms
-            int  leave  = int(((double) (total - cur) * (clock() - start)) / (cur * 1000.0)); // 还剩多少秒
-            auto second = leave % 60;
-            auto minute = (leave / 60) % 60;
-            auto hour   = leave / 3600;
-            printf("leave : %02dh:%02dm:%02ds \n", hour, minute, second);
-        }
-    }
+    Process<true> process;
 
 public:
     void render() final {
@@ -44,8 +19,7 @@ public:
         vh = camera->vh, vw = camera->vw; // 视口大小
         image->resize(vw, vh);
         // 初始化进度
-        initProcess();
-        updateProcess();
+        process.init(vw * vh, vh * 10);
 
         // 枚举每个像素
 #pragma omp parallel for
@@ -53,7 +27,7 @@ public:
 #pragma omp parallel for
             for (int y = 0; y < vh; y++) {
                 image->setPixel(x, y, samplePixel(number(x), number(y)));
-                updateProcess();
+                process.update();
             }
         }
     }
@@ -61,6 +35,7 @@ public:
     std::shared_ptr<RtCamera> camera2;
 
 private:
+    // 计算单个像素信息
     Color samplePixel(number x, number y) {
         Color     sum{};
         HitResult hit;
@@ -79,7 +54,6 @@ private:
         return sum / number(spp);
     }
 
-private:
     // 在[0,1)x[0,1)中随机采样一个点
     static std::pair<number, number> sampleArea() {
         return {randFloat(), randFloat()};
