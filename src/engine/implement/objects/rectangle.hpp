@@ -64,7 +64,7 @@ private:
         // 求偏移量
         number ow = wd * (p - center);
         number oh = hd * (p - center);
-        return {ow / w + 0.5_n, oh / h + 0.5_n};
+        return {ow / (w * 2) + 0.5_n, oh / (h * 2) + 0.5_n};
     }
 };
 
