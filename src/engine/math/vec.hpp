@@ -216,7 +216,7 @@ using Vec4 = Vec<4>;
 
 // 创建向量
 template<class... Args>
-inline auto make_vec(Args&&... args) requires((std::is_nothrow_convertible_v<Args, number> && ...)) {
+inline constexpr auto make_vec(Args&&... args) requires((std::is_nothrow_convertible_v<Args, number> && ...)) {
     return Vec<sizeof...(args)>{number(args)...};
 }
 
