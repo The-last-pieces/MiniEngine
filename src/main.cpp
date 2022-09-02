@@ -108,49 +108,41 @@ void testRtRender() {
     // 材质
     //材质
     //-------------------------------------------------------------
-
-    //    auto redDiffuseMat = std::make_shared<MaterialDefault>(
-    //        Color{}, Color::fromRGB256(255, 0, 0));
-    //    auto greenDiffuseMat = std::make_shared<MaterialDefault>(
-    //        Color{}, Color::fromRGB256(0, 255, 0));
-    //    auto blueDiffuseMat = std::make_shared<MaterialDefault>(
-    //        Color{}, Color::fromRGB256(0, 0, 255));
-    //    auto whiteDiffuseMat = std::make_shared<MaterialDefault>(
-    //        Color{}, Color::fromRGB256(255, 255, 255));
-    //    auto lightMat = std::make_shared<MaterialDefault>(
-    //        Color::fromRGB256(255, 255, 255) * 50, Color{});
-
-    auto redDiffuseMat = std::make_shared<MaterialDefault>(
-        Color{}, Color::fromRGB256(161, 16, 12));
-    auto greenDiffuseMat = std::make_shared<MaterialDefault>(
-        Color{}, Color::fromRGB256(36, 115, 23));
-    auto blueDiffuseMat = std::make_shared<MaterialDefault>(
-        Color{}, Color::fromRGB256(0, 0, 255));
-    auto whiteDiffuseMat = std::make_shared<MaterialDefault>(
-        Color{}, Color::fromRGB256(185, 181, 174));
-    auto lightMat = std::make_shared<MaterialDefault>(
-        Color::fromRGB256(255, 255, 255) * 50, Color{});
+    auto redDiffuseMat = std::make_shared<MaterialDiffuse>(
+        Color::fromRGB256(161, 16, 12));
+    auto greenDiffuseMat = std::make_shared<MaterialDiffuse>(
+        Color::fromRGB256(36, 115, 23));
+    auto blueDiffuseMat = std::make_shared<MaterialDiffuse>(
+        Color::fromRGB256(0, 0, 255));
+    auto whiteDiffuseMat = std::make_shared<MaterialDiffuse>(
+        Color::fromRGB256(185, 181, 174));
+    auto lightMat = std::make_shared<MaterialDiffuseLight>(
+        Color::fromRGB256(255, 255, 255) * 125);
     auto mirrorMat = std::make_shared<MaterialMirror>(
-        Color{}, Color::fromRGB256(255, 255, 255) / 1);
+        Color::fromRGB256(255, 255, 255) / 1);
+    auto earthMat = std::make_shared<MaterialDiffuse>(
+        std::make_shared<TextureImage>(R"(art\texture\earth.bmp)"));
 
     //坐标
     //-------------------------------------------------------------
-    const int scale = 1;
-    const int rectW = 20;
+    constexpr number rectW = 20_n, radius = 40_n;
 
-    Vec3 o  = scale * make_vec(0, -100 + 40, 0); //球体坐标
-    Vec3 A  = scale * make_vec(-100, 100, 100);  // 矩形 Cornell Box 顶点坐标
-    Vec3 B  = scale * make_vec(-100, -100, 100);
-    Vec3 C  = scale * make_vec(100, -100, 100);
-    Vec3 D  = scale * make_vec(100, 100, 100);
-    Vec3 E  = scale * make_vec(-100, 100, -100);
-    Vec3 F  = scale * make_vec(-100, -100, -100);
-    Vec3 G  = scale * make_vec(100, -100, -100);
-    Vec3 H  = scale * make_vec(100, 100, -100);
-    Vec3 L1 = scale * make_vec(rectW, 99.999, rectW); // 矩形灯光顶点坐标
-    Vec3 L2 = scale * make_vec(-rectW, 99.999, rectW);
-    Vec3 L3 = scale * make_vec(-rectW, 99.999, -rectW);
-    Vec3 L4 = scale * make_vec(rectW, 99.999, -rectW);
+    //球体坐标
+    Vec3 o = make_vec(-100 + radius, -100 + radius, -100 + radius);
+    // 矩形 Cornell Box 顶点坐标
+    Vec3 A = make_vec(-100, 100, 100);
+    Vec3 B = make_vec(-100, -100, 100);
+    Vec3 C = make_vec(100, -100, 100);
+    Vec3 D = make_vec(100, 100, 100);
+    Vec3 E = make_vec(-100, 100, -100);
+    Vec3 F = make_vec(-100, -100, -100);
+    Vec3 G = make_vec(100, -100, -100);
+    Vec3 H = make_vec(100, 100, -100);
+    // 矩形灯光顶点坐标
+    Vec3 L1 = make_vec(rectW, 99.999, rectW);
+    Vec3 L2 = make_vec(-rectW, 99.999, rectW);
+    Vec3 L3 = make_vec(-rectW, 99.999, -rectW);
+    Vec3 L4 = make_vec(rectW, 99.999, -rectW);
 
     //物体
     //-------------------------------------------------------------
