@@ -6,31 +6,36 @@
 #define MINI_ENGINE_DIFFUSE_HPP
 
 #include "../../interface/material.hpp"
+#include "../texture/solid.hpp"
 
 namespace mne {
 
 // 漫反射材质
 class MaterialDiffuse: public IMaterial {
+    std::shared_ptr<ITexture> albedo;
+
 public:
-    MaterialDiffuse(const Color& emission = Color::fromRGB256(0, 0, 0),
-                    const Color& albedo   = Color::fromRGB256(0, 0, 0)):
-        IMaterial(emission, albedo) {
+    MaterialDiffuse(const Color& albedo = Color::fromRGB256(0, 0, 0)):
+        albedo(std::make_shared<TextureSolid>(albedo)) {
     }
 
-    Vec3 sample(const Vec3& light_dir, const Vec3& out_dir, const Vec3& normal) const final {
-        return VecUtils::sampleHalfSphere(normal);
+    MaterialDiffuse(std::shared_ptr<ITexture> albedo):
+        albedo(std::move(albedo)) {
     }
 
-    // sample函数的概率密度 . dir为sample函数的返回值,n为表面法线方向
-    number PDF(const Vec3& dir, const Vec3& normal) const final {
-        return (dir * normal) / pi; // Todo pi or 2pi?
-        //return 1 / (number(2) * pi);
+    void sample(const Vec3& in_dir, const HitResult& hit, BxDFResult& bxdf) const final {
+        bxdf.specular = false;
+        bxdf.out_dir  = VecUtils::sampleHalfSphere(hit.normal);
+        bxdf.albedo   = albedo->value(hit.uv) / (2 * pi);
+        bxdf.pdf      = (bxdf.out_dir * hit.normal) / (2 * pi);
     }
+};
 
-    // 返回在入射方向为i出射方向为o条件下的光线反射率 , n为表面法线方向
-    Color reflect(const Vec3& in_dir, const Vec3& out_dir, const Vec3& normal) const final {
-        return albedo / pi;
-        //return albedo / (number(2) * pi);
+// 漫光照材质
+class MaterialDiffuseLight: public IMaterial {
+public:
+    MaterialDiffuseLight(const Color& emission):
+        IMaterial(std::make_shared<TextureSolid>(emission)) {
     }
 };
 
