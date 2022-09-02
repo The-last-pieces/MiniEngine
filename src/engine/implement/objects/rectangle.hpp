@@ -39,9 +39,9 @@ public:
 public:
     // 随机在物体表面上采样一个点
     void sampleLight(LightResult& result) const final {
-        result.normal   = normal;
-        result.emission = material->emission;
-        result.point    = center + wd * (randFloat(-1_n, 1_n) * w) + hd * (randFloat(-1_n, 1_n) * h);
+        result.normal = normal;
+        result.point  = center + wd * (randFloat(-1_n, 1_n) * w) + hd * (randFloat(-1_n, 1_n) * h);
+        result.uv     = mapping_uv(result.point);
     }
 
     number area() const final { return 4_n * w * h; }

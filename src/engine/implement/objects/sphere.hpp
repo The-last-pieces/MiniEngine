@@ -26,9 +26,9 @@ public:
 public:
     // 随机在物体表面上采样一个点
     void sampleLight(LightResult& result) const final {
-        result.normal   = VecUtils::sampleSphere();
-        result.point    = center + radius * result.normal;
-        result.emission = material->emission;
+        result.normal = VecUtils::sampleSphere();
+        result.point  = center + radius * result.normal;
+        result.uv     = mapping_uv(result.normal);
     }
 
     number area() const final {
