@@ -61,27 +61,27 @@ public:
 void testRsRender() {
     std::string paths[][2] = {
         {
-            R"(art\boggie\body.obj)",
-            R"(art\boggie\body_diffuse.tga)",
+            R"(art\model\boggie\body.obj)",
+            R"(art\model\boggie\body_diffuse.tga)",
         },
         {
-            R"(art\boggie\eyes.obj)",
-            R"(art\boggie\eyes_diffuse.tga)",
+            R"(art\model\boggie\eyes.obj)",
+            R"(art\model\boggie\eyes_diffuse.tga)",
         },
         {
-            R"(art\boggie\head.obj)",
-            R"(art\boggie\head_diffuse.tga)",
+            R"(art\model\boggie\head.obj)",
+            R"(art\model\boggie\head_diffuse.tga)",
         },
         //        {
-        //            R"(art\african_head\african_head.obj)",
-        //            R"(art\african_head\african_head_diffuse.tga)",
+        //            R"(art\model\african_head\african_head.obj)",
+        //            R"(art\model\african_head\african_head_diffuse.tga)",
         //        },
     };
 
     auto render = std::make_shared<RsRender>();
 
     auto add_model = [&](std::shared_ptr<Model>& model) {
-        model->transform.scale      = {50, 50, 50};
+        model->transform.scale = {50, 50, 50};
         render->scene->models.push_back(model);
     };
 
