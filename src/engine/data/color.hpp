@@ -51,6 +51,11 @@ struct Color {
         return {lhs.r / mut, lhs.g / mut, lhs.b / mut};
     }
 
+    // 按位除
+    friend constexpr Color operator/(const Color& lhs, const Color& rhs) {
+        return {lhs.r / rhs.r, lhs.g / rhs.g, lhs.b / rhs.b};
+    }
+
     // 赋值
     Color& operator+=(const Color& rhs) {
         r += rhs.r, g += rhs.g, b += rhs.b;
