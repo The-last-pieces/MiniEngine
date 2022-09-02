@@ -16,14 +16,15 @@
 
 namespace mne {
 
-// 自动控制绘图模式作用域
-struct ModeGuard {
-    // 控制类型:   GL_TRIANGLES,GL_LINES,GL_POINTS
-    // 分别表示:   三角形,       线段,    像素
-    explicit ModeGuard(GLenum mode) { glBegin(mode); }
+class MainWindow {
+    // 自动控制绘图模式作用域
+    struct ModeGuard {
+        // 控制类型:   GL_TRIANGLES,GL_LINES,GL_POINTS
+        // 分别表示:   三角形,       线段,    像素
+        explicit ModeGuard(GLenum mode) { glBegin(mode); }
 
-    ~ModeGuard() { glEnd(); }
-};
+        ~ModeGuard() { glEnd(); }
+    };
 
 protected:
     GLFWwindow* window = nullptr;
