@@ -1,5 +1,6 @@
 ﻿.*
 !.gitignore
+!.gitattributes
 !.clang-format
 third_party
 *build*
