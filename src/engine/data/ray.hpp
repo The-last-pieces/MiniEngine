@@ -28,13 +28,34 @@ struct Ray {
 
 class IObject;
 
-// 射线的碰撞结果
+// 射线碰撞点信息
 struct HitResult {
-    Vec3   point;  // 碰撞点坐标
-    Vec3   normal; // 碰撞面的法线
-    number tick{}; // point = pos + tick * dir
+    Vec3 point;  // 点坐标
+    Vec3 normal; // 面法线
+    Vec2 uv;     // 纹理坐标
+    bool back{}; // 是否位于背面
 
     const IObject* obj{}; // 碰撞到的物体
+
+    // outSide为朝外的法线
+    void setNormal(Vec3 outSide, const Ray& ray) {
+        back   = (outSide * ray.dir) > 0;
+        normal = back ? -outSide : outSide;
+    }
+
+    void setTick(number val) {
+        if (val > min_tick && val < max_tick) {
+            tick = max_tick = val;
+        }
+    }
+
+    Vec3 getPoint(const Ray& ray) const {
+        return ray.at(tick);
+    }
+
+private:
+    number tick{}; // point = pos + tick * dir
+    number min_tick = 1_n, max_tick = inf;
 };
 
 } // namespace mne
