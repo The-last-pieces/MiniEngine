@@ -16,7 +16,7 @@ class RtRender: public IRender {
 public:
     void render() final {
         // 初始化输出缓冲区
-        vh = camera->vh, vw = camera->vw; // 视口大小
+        auto [vw, vh] = camera2->getWH(); // 视口大小
         image->resize(vw, vh);
         // 初始化进度
         process.init(vw * vh, vh * 10);

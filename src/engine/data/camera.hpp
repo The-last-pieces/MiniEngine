@@ -106,6 +106,8 @@ class RtCamera {
     Vec3 view_right;       // 视图右方向(+x)
     Vec3 view_up;          // 视图上方向(+y)
     Vec3 view_left_bottom; // 视图的左下角(0,0)
+
+    int view_width{}, view_height{}; // 屏幕大小
 public:
     RtCamera(
         const Vec3& eye_pos,     // 摄像机的位置
@@ -116,21 +118,27 @@ public:
         ):
         eye_pos(eye_pos) {
         // 离eye_pos一个单位距离的视图宽高
-        number view_height = 2 * std::tan(fov / 2);
-        number view_width  = aspect_ratio * view_height;
+        number norm_view_height = 2 * std::tan(fov / 2);
+        number norm_view_width  = aspect_ratio * norm_view_height;
         // 求出三个标架
         Vec3 view_inner = (target_pos - eye_pos).normalize(); // -z
         view_up         = up_dir.normalize();                 // +y
         view_right      = view_inner.cross(view_up);          // xy=z , yz=+x=-zy
         // 求出宽高矢量
-        view_up *= view_height;
-        view_right *= view_width;
+        view_up *= norm_view_height;
+        view_right *= norm_view_width;
         // 求出左下角
         view_left_bottom = eye_pos + view_inner - view_right / 2_n - view_up / 2_n;
     }
 
-    // 从视口上某个坐标投射出一条射线,(x,y)在[0,1]x[0,1]内
+    void setViewPort(int w, int h) { view_width = w, view_height = h; }
+
+    std::pair<int, int> getWH() const { return {view_width, view_height}; }
+
+public:
+    // 从视口上某个坐标投射出一条射线,(x,y)在[0,view_width]x[0,view_height]内
     Ray makeRay(number x, number y) const {
+        x /= (number) view_width, y /= (number) view_height;
         return Ray{eye_pos, (view_left_bottom + view_right * x + view_up * y - eye_pos).normalize()};
     }
 };
