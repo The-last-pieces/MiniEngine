@@ -11,12 +11,15 @@
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "STB/stb_image.h"
+#undef STB_IMAGE_IMPLEMENTATION
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "STB/stb_image_write.h"
+#undef STB_IMAGE_WRITE_IMPLEMENTATION
 
 #define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "STB/stb_image_resize.h"
+#undef STB_IMAGE_RESIZE_IMPLEMENTATION
 
 namespace mne {
 
@@ -123,11 +126,18 @@ public:
     bool invalid(int x, int y) const { return x < 0 || x >= width || y < 0 || y >= height; }
 
 public:
-    // Todo 二次插值获取像素信息
+    // 二次插值获取像素信息
     Color getPixel(const Vec2& uv) const {
-        int x = MathUtils::clamp(0, int(uv.x() * number(width - 1)), width - 1);
-        int y = MathUtils::clamp(0, int(uv.y() * number(height - 1)), height - 1);
-        return getPixel(x, y);
+        auto   nw = number(width - 1), nh = number(height - 1);
+        number x  = MathUtils::clamp(0_n, uv.x() * nw, nw);
+        number y  = MathUtils::clamp(0_n, uv.y() * nh, nh);
+        int    x0 = int(x), y0 = int(y);
+        int    x1 = x0 + 1, y1 = y0 + 1;
+        return MathUtils::lerp(
+            MathUtils::lerp(getPixel(x0, y0), getPixel(x1, y0), x - (number) x0), // 水平插值
+            MathUtils::lerp(getPixel(x0, y1), getPixel(x1, y1), x - (number) x0), // 水平插值
+            y - y0                                                                // 垂直插值
+        );
     }
 
     Color getPixel(int x, int y) const {
