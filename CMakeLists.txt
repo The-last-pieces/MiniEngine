@@ -28,7 +28,7 @@ if (MSVC)
 endif ()
 
 # 拷贝资源文件
-file(COPY ./external/art DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+file(COPY external/art DESTINATION ${EXECUTABLE_OUTPUT_PATH})
 
 # 源文件集合
 set(SOURCE_FILES
@@ -70,6 +70,7 @@ set(SOURCE_FILES
 
         src/engine/tools/average.hpp
         src/engine/tools/process.hpp
+        src/engine/tools/json.hpp
 
         src/view/gui.hpp
 
@@ -79,7 +80,7 @@ set(SOURCE_FILES
 link_directories(external/lib)
 
 # 头文件目录, -I
-include_directories(external/include)
+include_directories(external/include src/engine) 
 
 # 源文件
 add_executable(main ${SOURCE_FILES})
