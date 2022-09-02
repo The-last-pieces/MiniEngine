@@ -13,16 +13,18 @@
  */
 
 namespace mne {
+
+// RGB颜色
 struct Color {
     // 范围为[0,1]
     number r, g, b; // Todo 是否考虑alpha通道?
 
-    // 约束在[0,1]范围
-    constexpr Color clamp() const {
+    // 约束在[0,limit]范围
+    constexpr Color clamp(number limit = 1_n) const {
         return {
-            mne::clamp(0_n, r, 1_n),
-            mne::clamp(0_n, g, 1_n),
-            mne::clamp(0_n, b, 1_n)};
+            mne::clamp(0_n, r, limit),
+            mne::clamp(0_n, g, limit),
+            mne::clamp(0_n, b, limit)};
     }
 
     // 颜色混合
