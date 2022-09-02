@@ -16,8 +16,8 @@ class Sphere final: public IObject {
     number radius;
 
 public:
-    Sphere(const Vec3& _c, number _r, std::shared_ptr<IMaterial> _m):
-        IObject(std::move(_m)), center(_c), radius(_r) {
+    Sphere(const Vec3& _c, number _r):
+        center(_c), radius(_r) {
         bbox = AABB{
             center - Vec3{radius, radius, radius},
             center + Vec3{radius, radius, radius}};

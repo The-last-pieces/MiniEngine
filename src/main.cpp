@@ -154,17 +154,46 @@ void testRtRender() {
     //物体
     //-------------------------------------------------------------
     // 球体
-    auto redSphere = std::make_shared<Sphere>(o, scale * 30.f, mirrorMat);
+    auto redSphere = IObject::load(
+        std::make_shared<Sphere>(o, radius),
+        earthMat);
+    auto redSphere1 = IObject::load(
+        std::make_shared<Sphere>(o + make_vec(-radius * 1.5, sqrt(3) * radius * 1.5, 0), radius),
+        mirrorMat);
+    auto redSphere2 = IObject::load(
+        std::make_shared<Sphere>(o + make_vec(radius * 1.5, sqrt(3) * radius * 1.5, 0), radius),
+        mirrorMat);
     // Cornell Box
-    auto bottomRectangle = std::make_shared<mne::Rectangle>(G, F, B, C, whiteDiffuseMat);
-    auto topRectangle    = std::make_shared<mne::Rectangle>(H, D, A, E, whiteDiffuseMat);
-    auto leftRectangle   = std::make_shared<mne::Rectangle>(A, B, F, E, redDiffuseMat);
-    auto rightRectangle  = std::make_shared<mne::Rectangle>(C, D, H, G, greenDiffuseMat);
-    auto backRectangle   = std::make_shared<mne::Rectangle>(E, F, G, H, whiteDiffuseMat);
+    auto bottomRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(G, F, B, C),
+        mirrorMat); //whiteDiffuseMat
+    auto topRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(H, D, A, E),
+        mirrorMat); //whiteDiffuseMat
+    auto leftRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(A, B, F, E),
+        mirrorMat); // redDiffuseMat
+    auto rightRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(C, D, H, G),
+        mirrorMat); // greenDiffuseMat
+    auto backRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(E, F, G, H),
+        mirrorMat); // whiteDiffuseMat
+    auto frontRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(A, B, C, D),
+        mirrorMat); // whiteDiffuseMat
 
     //光源
     //-------------------------------------------------------------
-    auto lightRectangle = std::make_shared<mne::Rectangle>(L1, L2, L3, L4, lightMat); //面光源
+    // 顶部光源
+    auto lightRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(L1, L2, L3, L4),
+        lightMat);
+    // 环境光源
+    auto envLightRectangle = IObject::load(
+        std::make_shared<mne::Rectangle>(make_vec(0, -100 + 40, 400), make_vec(0, 0, -1), make_vec(1, 0, 0), 100_n, 100_n),
+        std::make_shared<MaterialDiffuseLight>(
+            Color::fromRGB256(255, 255, 255) * 5));
 
     //场景
     //-------------------------------------------------------------

@@ -31,12 +31,7 @@ public:
     const IMaterial& matRef() const { return *material; }
 
 public:
-    IObject(std::shared_ptr<IMaterial> _mat):
-        material(std::move(_mat)) {
-        if (!material) {
-            material = std::make_shared<MaterialDefault>();
-        }
-    }
+    IObject() { setMaterial(nullptr); }
 
     // 是否为光源
     bool isLight() const {
@@ -62,6 +57,25 @@ public:
             hit.obj   = this;
         }
         return ret;
+    }
+
+    template<class T>
+    static std::shared_ptr<T> load(
+        std::shared_ptr<T>                obj,
+        const std::shared_ptr<IMaterial>& material, const Mat44& transform)
+        requires((std::is_base_of_v<IObject, T>) ) {
+        obj->afterTransform(transform);
+        obj->material = material;
+        return obj;
+    }
+
+    template<class T>
+    static std::shared_ptr<T> load(
+        std::shared_ptr<T>                obj,
+        const std::shared_ptr<IMaterial>& material = nullptr)
+        requires((std::is_base_of_v<IObject, T>) ) {
+        obj->material = material;
+        return obj;
     }
 
 protected:

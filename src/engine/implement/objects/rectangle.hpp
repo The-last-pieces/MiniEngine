@@ -17,11 +17,10 @@ class Rectangle: public IObject {
     number w, h;   // 宽高的一半
 
 public:
-    Rectangle(Vec3 _c, Vec3 _n, Vec3 _wd, number w, number h, std::shared_ptr<IMaterial> _m):
-        IObject(std::move(_m)), center(_c), normal(_n), wd(_wd), hd(normal.cross(wd)), w(w), h(h) {}
+    Rectangle(Vec3 _c, Vec3 _n, Vec3 _wd, number w, number h):
+        center(_c), normal(_n), wd(_wd), hd(normal.cross(wd)), w(w), h(h) {}
 
-    Rectangle(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 p4, std::shared_ptr<IMaterial> _m):
-        IObject(std::move(_m)) {
+    Rectangle(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 p4) {
         Vec3 ps[] = {p2, p3, p4};
         std::sort(std::begin(ps), std::end(ps), [&](const Vec3& a, const Vec3& b) {
             return (a - p1).norm2() < (b - p1).norm2();
