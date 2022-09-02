@@ -56,7 +56,11 @@ protected:
         } else {
             return false;
         }
-        hit.normal = (ray.at(hit.tick) - center).normalize();
+
+        Vec3 normal = ((hit.point = ray.at(hit.tick)) - center).normalize();
+        hit.setNormal(normal, ray);
+        hit.uv = mapping_uv(normal);
+
         return true;
     }
 };

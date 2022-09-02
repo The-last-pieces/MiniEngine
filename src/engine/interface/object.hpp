@@ -49,10 +49,7 @@ public:
     // 光线和物体的首个交点
     bool intersect(const Ray& ray, HitResult& hit) const {
         bool ret = bbox.intersect(ray) && intersection(ray, hit);
-        if (ret) {
-            hit.point = ray.at(hit.tick);
-            hit.obj   = this;
-        }
+        hit.obj  = ret ? this : nullptr;
         return ret;
     }
 

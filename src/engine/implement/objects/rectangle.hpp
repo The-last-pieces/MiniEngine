@@ -59,6 +59,7 @@ protected:
         if (ow > w || oh > h) return false;
 
         hit.tick   = tick;
+        hit.point  = p;
         hit.normal = normal * ray.dir > 0 ? -normal : normal;
         return true;
     }
