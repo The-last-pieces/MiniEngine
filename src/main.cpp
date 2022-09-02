@@ -223,8 +223,8 @@ void testRtRender() {
             SCR_WIDTH, SCR_HEIGHT, render);
         window.show();
     } else {
-        auto path      = R"(..\demo\out.bmp)";
-        *render->image = mne::BMPImage::loadFromDisk(path);
+        // Todo 自动递增
+        auto path = R"(..\demo\out.png)";
         render->render();
         render->image->saveToDisk(path);
     }
