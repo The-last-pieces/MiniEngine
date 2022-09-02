@@ -90,16 +90,19 @@ _**PS:此文件结构不一定与当前源码一致**_
   - math                 // 数学相关
     - vec.hpp            // 提供向量运算
     - mat.hpp            // 提供矩阵运算
-    - utils.hpp          // 提供随机数,向量,矩阵的工具类
+    - utils.hpp          // 提供随机数,数学,向量,矩阵的工具类
+  - tools                // 通用工具
+    - average.hpp        // 平滑统计量
+    - json.hpp           // json工具类
+    - process.hpp        // 进度条类
   - data                 // 数据相关:渲染中用到的POD类
     - camera.hpp         // 管理摄像机属性
     - color.hpp          // 提供颜色运算
     - ray.hpp            // 提供射线定义
-  - store                // 存储相关,需要导入导出的资源文件
-    - bmp.hpp            // 读写BMP图片文件
-    - tga.hpp            // 读写TGA图片文件
-    - model.hpp          // 读写OBJ模型文件:包括顶点,图元,纹理信息
     - scene.hpp          // 读写场景文件:装载摄像机和模型信息
+  - store                // 存储相关,需要导入导出的资源文件
+    - image.hpp          // 读写图片文件
+    - model.hpp          // 读写OBJ模型文件:包括顶点,图元,纹理信息
   - interface            // 接口相关
     - material.hpp       // 物体材质:定义BRDF规则
     - object.hpp         // 可渲染的图元:定义光线求交,包围盒计算规则
@@ -111,29 +114,29 @@ _**PS:此文件结构不一定与当前源码一致**_
       - default.hpp      // 默认材质:diffuse
       - diffuse.hpp      // 漫反射材质
       - mirror.hpp       // 镜面材质
-      - refract.hpp      // 折射材质
-      - micro.hpp        // 微表面材质
-      - disney.hpp       // 迪士尼标准材质
+      - refract.hpp      // *折射材质
+      - micro.hpp        // *微表面材质
+      - disney.hpp       // *迪士尼标准材质
     - objects            // 具体的图元实现
       - sphere.hpp       // 球体
       - rectangle.hpp    // 矩形
-      - triangle.hpp     // 三角形
+      - triangle.hpp     // *三角形
     - render             // 具体的渲染器实现
       - rt_render.hpp    // 光线追踪渲染器
       - rs_render.hpp    // 光栅化渲染器
     - texture            // 具体的纹理实现
       - mapping.hpp      // 图片映射纹理
       - solid.hpp        // 单色纹理
-      - noise.hpp        // 噪声纹理
+      - noise.hpp        // *噪声纹理
   - accelerator          // 加速结构
     - AABB.hpp           // 包围盒
-    - BVH.hpp            // 层次包围盒
+    - BVH.hpp            // *层次包围盒
   - dynamics             // 动力学相关
-    - collision.hpp      // 碰撞检测算法
+    - collision.hpp      // *碰撞检测算法
     - simulation         // 物理模拟
-      - rigid.hpp        // 刚体模拟
-      - fluid.hpp        // 流体模拟
-      - cloth.hpp        // 布料模拟
+      - rigid.hpp        // *刚体模拟
+      - fluid.hpp        // *流体模拟
+      - cloth.hpp        // *布料模拟
 - view                   // 显示+控制层
   - gui.hpp              // 负责实时呈现渲染结果
 - main.cpp               // 入口文件,负责程序参数的解析
