@@ -18,6 +18,10 @@ using number = float;
 constexpr number eps = 1e-8f;
 constexpr number inf = std::numeric_limits<number>::infinity();
 constexpr number pi  = std::numbers::pi_v<number>;
+constexpr number pi2 = pi * 2;
+
+constexpr number pi_half    = pi / 2;
+constexpr number pi_quarter = pi / 4;
 
 constexpr number operator""_n(unsigned long long val) {
     return number((long long) (val));
