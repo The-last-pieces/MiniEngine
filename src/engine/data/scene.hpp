@@ -25,12 +25,10 @@ public:
     bool rayCast(const Ray& ray, HitResult& hit) const {
         HitResult temp;
         bool      isHit = false;
-        number    tick  = std::numeric_limits<number>::max();
 
         for (const auto& ptr : objects) {
-            if (ptr->intersect(ray, temp) && temp.tick > 0.1 && temp.tick < tick) { //
+            if (ptr->intersect(ray, temp)) {
                 isHit = true;
-                tick  = temp.tick;
                 hit   = temp;
             }
         }
