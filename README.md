@@ -40,11 +40,11 @@ mirror material ; 500 spp
 
 <p align="center">
 <strong>
-image texture ; 5k spp
+image texture ; 500 spp
 </strong>
 </p> 
 
-![](docs/images/demos/rt/earth_5k.bmp)
+![](docs/images/demos/rt/earth_500.png)
 
 # Feature
 
