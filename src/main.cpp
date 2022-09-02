@@ -208,13 +208,12 @@ void testRtRender() {
         number(atan2(100, 380 - 100) * 2),
         number(SCR_WIDTH) / SCR_HEIGHT);
 
+    camera->setViewPort(SCR_WIDTH, SCR_HEIGHT);
+
     auto render     = std::make_shared<RtRender>();
     render->scene   = scene;
     render->camera2 = camera;
     render->spp     = 100;
-
-    render->camera->vh = SCR_HEIGHT;
-    render->camera->vw = SCR_WIDTH;
 
     constexpr bool ui = true;
     if constexpr (ui) {
