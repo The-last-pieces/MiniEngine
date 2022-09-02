@@ -54,10 +54,10 @@ public:
     Model() = default;
 
     // 根据模型路径载入信息
-    Model(std::string_view model_path) { loadFromDisk(model_path); }
+    Model(const std::string& model_path) { loadFromDisk(model_path); }
 
 public:
-    void loadFromDisk(std::string_view model_path) {
+    void loadFromDisk(const std::string& model_path) {
         std::ifstream in(model_path.data());
         if (!in) return;
         vertices.clear(), triangles.clear(), transform = {};

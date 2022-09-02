@@ -58,7 +58,7 @@ public:
 };
 
 void testRsRender() {
-    std::string_view paths[][2] = {
+    std::string paths[][2] = {
         {
             R"(art\boggie\body.obj)",
             R"(art\boggie\body_diffuse.tga)",
