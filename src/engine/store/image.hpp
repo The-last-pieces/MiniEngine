@@ -21,6 +21,32 @@ namespace mne {
 class Image {
     static constexpr int bpp = 3; // bytesPerPixel
 
+    std::vector<Color> data;
+
+    int width{}, height{};
+
+    void loadBuffer(stbi_uc* buffer, int w, int h) {
+        resize(w, h);
+        for (int i = height - 1, k = 0; i >= 0; --i) {
+            for (int j = 0; j < width; j++, k++) {
+                setPixel(j, i, Color::fromRGB256(buffer[k * bpp], buffer[k * bpp + 1], buffer[k * bpp + 2]));
+            }
+        }
+    }
+
+    std::vector<stbi_uc> generateBuffer() const {
+        std::vector<uint8_t> buffer(width * height * bpp);
+        for (int i = height - 1, k = 0; i >= 0; --i) {
+            for (int j = 0; j < width; j++, k++) {
+                auto c              = getPixel(j, i);
+                buffer[k * bpp]     = int(c.r * 255_n);
+                buffer[k * bpp + 1] = int(c.g * 255_n);
+                buffer[k * bpp + 2] = int(c.b * 255_n);
+            }
+        }
+        return buffer;
+    }
+
 public:
     Image() = default;
 
@@ -41,12 +67,7 @@ public:
         int   w, h, c;
         auto* buffer = stbi_load(path.c_str(), &w, &h, &c, bpp);
         if (buffer) {
-            resize(w, h);
-            for (int i = height - 1, k = 0; i >= 0; --i) {
-                for (int j = 0; j < width; j++, k++) {
-                    setPixel(j, i, Color::fromRGB256(buffer[k * bpp], buffer[k * bpp + 1], buffer[k * bpp + 2]));
-                }
-            }
+            loadBuffer(buffer, w, h);
             stbi_image_free(buffer);
             return true;
         } else {
@@ -60,15 +81,7 @@ public:
         if (it == std::string::npos) return false;
         std::string ext = path.substr(it + 1);
 
-        std::vector<uint8_t> buffer(width * height * bpp);
-        for (int i = height - 1, k = 0; i >= 0; --i) {
-            for (int j = 0; j < width; j++, k++) {
-                auto c              = getPixel(j, i);
-                buffer[k * bpp]     = int(c.r * 255_n);
-                buffer[k * bpp + 1] = int(c.g * 255_n);
-                buffer[k * bpp + 2] = int(c.b * 255_n);
-            }
-        }
+        auto buffer = generateBuffer();
 
         if (ext == "bmp") {
             return stbi_write_bmp(path.c_str(), width, height, bpp, buffer.data());
