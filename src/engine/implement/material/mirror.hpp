@@ -10,25 +10,18 @@
 namespace mne {
 
 class MaterialMirror: public IMaterial {
+    Color albedo;
+
 public:
-    MaterialMirror(const Color& emission = Color::fromRGB256(0, 0, 0),
-                   const Color& albedo   = Color::fromRGB256(0, 0, 0)):
-        IMaterial(emission, albedo) {
+    MaterialMirror(const Color& albedo):
+        albedo(albedo) {
     }
 
-    Vec3 sample(const Vec3& i, const Vec3& o, const Vec3& n) const final {
-        return VecUtils::flapByVec(o, n);
-    }
-
-    // sample函数的概率密度 . dir为sample函数的返回值,n为表面法线方向
-    number PDF(const Vec3& dir, const Vec3& n) const final {
-        return 1;
-    }
-
-    // Todo 镜面反射高光过于严重
-    // 返回在入射方向为i出射方向为o条件下的光线反射率 , n为表面法线方向
-    Color reflect(const Vec3& i, const Vec3& o, const Vec3& n) const final {
-        return albedo / (n * i);
+    void sample(const Vec3& in_dir, const HitResult& hit, BxDFResult& bxdf) const final {
+        bxdf.specular = true;
+        bxdf.out_dir  = VecUtils::flapByVec(-in_dir, hit.normal);             // 镜面反射
+        bxdf.albedo   = (albedo / (bxdf.out_dir * hit.normal + eps)).clamp(); // 菲涅尔效应
+        bxdf.pdf      = 1_n;
     }
 };
 
