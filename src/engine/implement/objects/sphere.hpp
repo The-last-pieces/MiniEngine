@@ -55,6 +55,18 @@ protected:
         hit.setNormal(normal, ray);
         hit.uv = mapping_uv(normal);
     }
+
+private:
+    // Todo 结合旋转
+    // 单位球面坐标映射到纹理坐标
+    Vec2 mapping_uv(const Vec3& normal) const {
+        auto theta = acos(-normal.y());                   // 仰角
+        auto phi   = atan2(-normal.z(), normal.x()) + pi; // 转角
+
+        phi = std::fmod(std::fmod(phi, pi * 2_n) + pi * 2_n, pi * 2_n);
+
+        return {phi / (2 * pi), theta / pi};
+    }
 };
 
 } // namespace mne
