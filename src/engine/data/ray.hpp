@@ -40,9 +40,13 @@ public:
     const IObject* obj{}; // 碰撞到的物体
 private:
     number tick{}; // point = pos + tick * dir
-    number min_tick = 1_n, max_tick = inf;
+    number min_tick = 0.001_n;
+    number max_tick = inf;
 
 public:
+    // 重新开始一次采样
+    void reset() { max_tick = inf, success = false, obj = nullptr; }
+
     // outSide为朝外的法线
     void setNormal(Vec3 outSide, const Ray& ray) {
         back   = (outSide * ray.dir) > 0;
