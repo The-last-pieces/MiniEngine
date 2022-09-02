@@ -8,9 +8,9 @@
 #include "../engine/interface/render.hpp"
 #include "../engine/store/image.hpp"
 #include "GLFW/glfw3.h"
+#include "../engine/tools/average.hpp"
 #include <string>
 #include <ctime>
-#include <queue>
 #include <thread>
 #include <mutex>
 
@@ -25,27 +25,6 @@ struct ModeGuard {
     ~ModeGuard() { glEnd(); }
 };
 
-// 平滑统计量
-template<size_t N>
-requires(N > 0) class Average {
-private:
-    std::queue<double> q;
-
-    double sum{};
-
-public:
-    operator double() const { return sum / q.size(); }
-
-    Average& operator+=(double val) { return expand(val), *this; }
-
-private:
-    void expand(double cur) {
-        sum += cur, q.push(cur);
-        if (q.size() > N) sum -= q.front(), q.pop();
-    }
-};
-
-class MainWindow {
 protected:
     GLFWwindow* window = nullptr;
 
