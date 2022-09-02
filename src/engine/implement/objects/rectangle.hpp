@@ -9,6 +9,7 @@
 
 namespace mne {
 
+// Todo 重构结构 Vec3 leftBottom, left , up
 // 矩形
 class Rectangle: public IObject {
     Vec3   center; // 矩形中心
@@ -47,21 +48,23 @@ public:
     number area() const final { return 4_n * w * h; }
 
 protected:
-    bool intersection(const Ray& ray, HitResult& hit) const final {
-        // 先和平面求交
+    void intersection(const Ray& ray, HitResult& hit) const final {
+        // 和平面求交
         number tick = ray.flat(center, normal);
-        if (tick < 0_n) return false;
-        Vec3 p = ray.at(tick);
-        // 求hw方向偏移
-        number oh = std::abs(wd * (p - center));
-        number ow = std::abs(hd * (p - center));
+        if (tick < 0_n) return;
+        hit.point = ray.at(tick);
+        hit.uv    = mapping_uv(hit.point);
+        if (hit.uv.v_min() < 0 || hit.uv.v_max() > 1) return;
+        hit.setTick(tick);
+        hit.setNormal(normal, ray);
+    }
 
-        if (ow > w || oh > h) return false;
-
-        hit.tick   = tick;
-        hit.point  = p;
-        hit.normal = normal * ray.dir > 0 ? -normal : normal;
-        return true;
+private:
+    Vec2 mapping_uv(const Vec3& p) const {
+        // 求偏移量
+        number ow = wd * (p - center);
+        number oh = hd * (p - center);
+        return {ow / w + 0.5_n, oh / h + 0.5_n};
     }
 };
 
