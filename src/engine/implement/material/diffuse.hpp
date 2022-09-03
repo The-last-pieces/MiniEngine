@@ -26,8 +26,8 @@ public:
     void sample(const Vec3& in_dir, const HitResult& hit, BxDFResult& bxdf) const final {
         bxdf.specular = false;
         bxdf.out_dir  = VecUtils::sampleHalfSphere(hit.normal);
-        bxdf.albedo   = albedo->value(hit.uv) / (2 * pi);
-        bxdf.pdf      = (bxdf.out_dir * hit.normal) / (2 * pi);
+        bxdf.albedo   = albedo->value(hit.uv) / pi2;
+        bxdf.pdf      = (bxdf.out_dir * hit.normal) / pi2;
     }
 };
 
