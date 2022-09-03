@@ -122,10 +122,39 @@ public:
         return (from * toDir) * toDir;
     }
 
-    // 关于向量对折
-    static constexpr Vec3 flapByVec(Vec3 v, Vec3 n) {
-        // v + v' = 2 * (v * n) * n
-        return (2 * (v * n)) * n - v;
+    // 投影在平面上
+    static Vec3 mapToFlat(const Vec3& from, const Vec3& toDir) {
+        return from - mapToDir(from, toDir);
+    }
+
+    // 将球面坐标解析为方位角(theta)和极角(phi)
+    // 方位角为+z逆时针转到dir的角度 , 极角为dir和xz屏幕的夹角
+    // 返回theta为[0,2pi), phi为[-pi,pi)
+    static Vec2 dir2angle(const Vec3& dir) {
+        // 计算+Z要旋转多少度才能追上dir在xz平面上的投影
+        Vec2   mapping = dir.pick<0, 2>();
+        number phi     = Z.pick<0, 2>().rotate(mapping);
+        // mapping和dir的夹角[0,pi/2]
+        Vec3   map_dir = {mapping.x(), 0, mapping.y()};
+        number theta   = dir.inner(map_dir);
+        if (dir.y() < 0) theta *= -1_n;
+        return {phi, theta};
+    }
+
+    // 将方位角和极角转换为球面坐标
+    static Vec3 angle2dir(const Vec2& theta_phi) {
+        number theta = theta_phi.x(), phi = theta_phi.y();
+        number cosine = cos(phi), y = sin(phi);
+        number x = sin(theta) * cosine, z = cos(theta) * cosine;
+        return {x, y, z};
+    }
+
+    // 一个坐标跟随坐标系经过方位角和极角变换后的坐标
+    static Vec3 afterRotate(const Vec3& dir, const Vec2& theta_phi) {
+        Vec3 z = angle2dir(theta_phi);
+        Vec3 x = angle2dir({theta_phi.x() + pi_half, 0});
+        Vec3 y = z.cross(x);
+        return toWorld(dir, x, y, z);
     }
 
     // 在单位球上均匀采样
