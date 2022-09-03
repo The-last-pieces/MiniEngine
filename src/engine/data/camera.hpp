@@ -105,33 +105,43 @@ class RtCamera {
     Vec3 eye_pos;          // 摄像机位置
     Vec3 view_right;       // 视图右方向(+x)
     Vec3 view_up;          // 视图上方向(+y)
+    Vec3 view_inner;       // 视图内方向(-z)
     Vec3 view_left_bottom; // 视图的左下角(0,0)
 
     int view_width{}, view_height{}; // 屏幕大小
+
+    number view_near = 0.1_n, view_far = 800.0_n; // 视锥范围near&far
+    number aspect_ratio = 1_n, fov;
+
 public:
-    RtCamera(
-        const Vec3& eye_pos,     // 摄像机的位置
-        const Vec3& target_pos,  // 观测点的位置,成像后位于图片中心
-        const Vec3& up_dir,      // 摄像机的上方 Todo up_dir和view_inner可能不垂直的问题
-        number      fov,         // 仰角的两倍,[0,pi/2]
-        number      aspect_ratio // 宽高比
-        ):
-        eye_pos(eye_pos) {
+    Camera(const Vec3& eye_pos,    // 摄像机的位置
+           const Vec3& target_pos, // 观测点的位置,成像后位于图片中心
+           int width, int height,  // 屏幕大小
+           number fov,             // 仰角的两倍,[0,pi]
+           number rotate           // up_dir绕view_inner的旋转角度
+           ):
+        eye_pos(eye_pos),
+        fov(fov), view_width(width), view_height(height) {
+        // 宽高比
+        aspect_ratio = number(width) / number(height);
+        /// 求出三个标架
+        // 视线方向 -z
+        view_inner = (target_pos - eye_pos).normalize();
+        // 头顶方向 +y
+        view_up = VecUtils::afterRotate(VecUtils::Up, VecUtils::dir2angle(-view_inner)).normalize();
+        view_up = MatUtils::rotate(view_inner, rotate) * view_up;
+        // 右手方向 +x , xy=z , yz=+x=-zy
+        view_right = view_inner.cross(view_up);
+
         // 离eye_pos一个单位距离的视图宽高
         number norm_view_height = 2 * std::tan(fov / 2);
         number norm_view_width  = aspect_ratio * norm_view_height;
-        // 求出三个标架
-        Vec3 view_inner = (target_pos - eye_pos).normalize(); // -z
-        view_up         = up_dir.normalize();                 // +y
-        view_right      = view_inner.cross(view_up);          // xy=z , yz=+x=-zy
         // 求出宽高矢量
         view_up *= norm_view_height;
         view_right *= norm_view_width;
         // 求出左下角
         view_left_bottom = eye_pos + view_inner - view_right / 2_n - view_up / 2_n;
     }
-
-    void setViewPort(int w, int h) { view_width = w, view_height = h; }
 
     std::pair<int, int> getWH() const { return {view_width, view_height}; }
 
