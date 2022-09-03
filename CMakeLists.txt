@@ -55,6 +55,7 @@ set(SOURCE_FILES
         src/engine/implement/material/micro.hpp
         src/engine/implement/material/disney.hpp
 
+        src/engine/implement/objects/aggregate.hpp
         src/engine/implement/objects/sphere.hpp
         src/engine/implement/objects/rectangle.hpp
 
@@ -80,7 +81,7 @@ set(SOURCE_FILES
 link_directories(external/lib)
 
 # 头文件目录, -I
-include_directories(external/include src/engine) 
+include_directories(external/include src/engine)
 
 # 源文件
 add_executable(main ${SOURCE_FILES})
