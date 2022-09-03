@@ -24,7 +24,7 @@ boggie 1w face
 </strong>
 </p>
 
-![](docs/images/demos/rs/triangle_1w.png)
+![](docs/images/demos/rs/boggie_1w.png)
 
 ## 光线追踪
 
