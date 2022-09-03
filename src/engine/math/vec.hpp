@@ -90,13 +90,13 @@ public:
         return lhs[1] * rhs[0] - lhs[0] * rhs[1];
     }
 
-    // this和rhs的夹角, [-pi, pi]
+    // this和rhs的夹角, [0, pi]
     constexpr number inner(const Vec& rhs) const {
         const Vec& lhs = *this;
         return std::acos((lhs * rhs) / (lhs.length() * rhs.length()));
     }
 
-    // this顺时针旋转到target需要的角度
+    // this逆时针旋转到target需要的角度
     constexpr number rotate(const Vec& target) const {
         const Vec &lhs = *this, &rhs = target;
         number     angle = inner(rhs);
