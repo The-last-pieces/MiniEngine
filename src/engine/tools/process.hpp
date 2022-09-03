@@ -22,6 +22,13 @@ class Process {
 
     clock_t start{}; // 开始时间
 
+    static void printTime(int secondCnt) {
+        auto second = secondCnt % 60;
+        auto minute = (secondCnt / 60) % 60;
+        auto hour   = secondCnt / 3600;
+        printf("%02dh:%02dm:%02ds", hour, minute, second);
+    }
+
 public:
     void init(int target, int inner) {
         process = 0;
@@ -37,11 +44,10 @@ public:
             std::unique_lock locker(lock);
             printf("process : %.4f%% , ", (double) cur / total * 100);
             // speed = process / (clock() - start) , 1进度/ms
-            int  leave  = int(((double) (total - cur) * (clock() - start)) / (cur * 1000.0)); // 还剩多少秒
-            auto second = leave % 60;
-            auto minute = (leave / 60) % 60;
-            auto hour   = leave / 3600;
-            printf("leave : %02dh:%02dm:%02ds \n", hour, minute, second);
+            int cost  = int(clock() - start);
+            int leave = int(((double) (total - cur) * cost) / (cur * 1000.0)); // 还剩多少秒
+            // 打印累计时间
+            printf("leave : "), printTime(leave), printf(" , cost : "), printTime(cost / 1000), printf("\n");
         }
     }
 };
