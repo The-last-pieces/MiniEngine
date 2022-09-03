@@ -162,7 +162,7 @@ public:
         // https://blog.csdn.net/yjr3426619/article/details/102706968
         number a = RandomUtils::randFloat(), b = RandomUtils::randFloat();
         // 随机生成转角和仰角
-        number phi = 2 * pi * a, theta = acos(b);
+        number phi = pi2 * a, theta = acos(b);
         number x = cos(theta) * cos(phi);
         number y = cos(theta) * sin(phi);
         number z = sin(theta);
@@ -170,26 +170,36 @@ public:
         return make_vec(x, y, z);
     }
 
-    // Todo 函数意义注释
-    static Vec3 toWorld(Vec3 a, Vec3 n) {
-        //施密特标准正交化
-        auto N    = n.normalize();
-        auto temp = std::abs(n.x()) > .1 ? make_vec(0, 1, 0) : make_vec(1, 0, 0);
-        auto U    = (temp - (temp * N) * N).normalize();
-        auto V    = N.cross(U);
-        return a.x() * U + a.y() * V + a.z() * N;
+    // 求世界坐标系的坐标在相对坐标系下的坐标
+    static Vec3 toLocal(const Vec3& v, const Vec3& x, const Vec3& y, const Vec3& z) {
+        return make_vec(v * x, v * y, v * z);
+    }
+
+    // 求相对坐标系的坐标在世界坐标系下的坐标
+    static Vec3 toWorld(const Vec3& v, const Vec3& x, const Vec3& y, const Vec3& z) {
+        return v.x() * x + v.y() * y + v.z() * z;
+    }
+
+    // 在z平面上随便取一个方向作为y轴, 以(y.cross(z), y, z)作为标架
+    static Vec3 toWorld(const Vec3& v, const Vec3& z) {
+        Vec3 dir = Y;
+        // 距离太近,则换另一个轴进行投影
+        if (std::abs(z * dir) > 0.5_n) dir = X;
+        Vec3 y = mapToFlat(dir, z);
+        Vec3 x = y.cross(z);
+        return toWorld(v, x, y, z);
     };
 
     // 在法线为n的半球采样,概率密度为dir*n/pi
-    static Vec3 sampleHalfSphere(Vec3 n) {
-        number phi    = 2 * pi * RandomUtils::randFloat();
-        number z      = std::fabs(1.0f - 2 * RandomUtils::randFloat());
-        number radius = std::sqrt(1.0f - z * z);
+    static Vec3 sampleHalfSphere(const Vec3& n) {
+        number phi    = pi2 * RandomUtils::randFloat();
+        number z      = std::abs(1_n - 2 * RandomUtils::randFloat());
+        number radius = std::sqrt(1_n - z * z);
 
         number x = radius * std::cos(phi);
         number y = radius * std::sin(phi);
 
-        // Todo 转换到世界坐标系意义注释
+        // 将在n做z轴的相对坐标系中的向量转到世界坐标系中
         return toWorld(make_vec(x, y, z), n);
     }
 
