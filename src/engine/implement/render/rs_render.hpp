@@ -62,23 +62,20 @@ namespace mne {
 
 class RsRender: public IRender {
 private:
-    int vh{}, vw{}; // 视口大小
+    int vw{}, vh{}; // 视口大小
 
     std::vector<number> depth; // z_buffer缓存
 
-    Mat44 trans_mat{};     // 当前模型的变换矩阵
-    Mat44 trans_mat_inv{}; // trans_mat.invert()的缓存
-    Mat44 screen_mat{};    //
-    Mat44 screen_mat_inv{};
+    Mat44 trans_mat{};      // 当前模型的变换矩阵
+    Mat44 trans_mat_inv{};  // trans_mat.invert()的缓存
+    Mat44 screen_mat{};     // 当前模型的屏幕变换矩阵
+    Mat44 screen_mat_inv{}; // screen_mat.invert()的缓存
 
     struct VertexData {
         Vec3  position;
         Vec2  texCoord;
         Color color{};
     };
-
-public:
-    RsRender() = default;
 
 public:
     void render() final {
@@ -149,22 +146,22 @@ private:
         Vec3 u3      = make_vec(texes[0].x(), texes[1].x(), texes[2].x());
         Vec3 v3      = make_vec(texes[0].y(), texes[1].y(), texes[2].y());
         // 获取i方向边界
-        auto i_min = std::max((int) make_vec(a.x(), b.x(), c.x()).v_min(), 0);
-        auto i_max = std::min((int) make_vec(a.x(), b.x(), c.x()).v_max(), vh - 1);
+        auto x_min = std::max((int) make_vec(a.x(), b.x(), c.x()).v_min(), 0);
+        auto x_max = std::min((int) make_vec(a.x(), b.x(), c.x()).v_max(), vw - 1);
 
 #pragma omp parallel for
         // Todo 阴影
-        for (int i = i_min; i <= i_max; ++i) {
+        for (int x = x_min; x <= x_max; ++x) {
             // 获取紧致的左右边界
-            auto [fl, fr] = getTriangleBound(a2, b2, c2, float(i));
-            auto l = std::max(0, (int) fl), r = std::min(vw - 1, (int) fr);
+            auto [y_min, y_max] = getTriangleBound(a2, b2, c2, number(x));
+            auto l = std::max(0, (int) y_min), r = std::min(vh - 1, (int) y_max);
             // Todo 反锯齿
-            while (l <= r && !inTriangle(make_vec(i, l), a2, b2, c2)) ++l;
-            while (l <= r && !inTriangle(make_vec(i, r), a2, b2, c2)) --r;
+            while (l <= r && !inTriangle(make_vec(x, l), a2, b2, c2)) ++l;
+            while (l <= r && !inTriangle(make_vec(x, r), a2, b2, c2)) --r;
             // 填充[l,r]区间
-            for (int j = l; j <= r; ++j) {
+            for (int y = l; y <= r; ++y) {
                 // 遍历屏幕空间中的点
-                Vec3 rawPoint = make_vec(i, j, 0);
+                Vec3 rawPoint = make_vec(x, y, 0);
                 // 获取z轴信息
                 rawPoint = intersect(a, norm, make_vec(0, 0, 1), rawPoint);
 
@@ -193,19 +190,18 @@ private:
                     color         = {vecColor.x(), vecColor.y(), vecColor.z()};
                 }
                 // 设置像素(并执行深度检测)
-                setPixel(i, j, color, dep);
+                setPixel(x, y, color, dep);
             }
         }
     }
 
-    void setPixel(int i, int j, const Color& fill, number z) {
+    void setPixel(int x, int y, const Color& fill, number z) {
 #ifndef NDEBUG
-        if (i < 0 || i >= vh || j < 0 || j >= vw)
-            throw std::out_of_range("RsRender::setPixel");
+        if (image->invalid(x, y)) throw std::out_of_range("RsRender::setPixel");
 #endif
-        auto& ref = depth[i * vw + j];
+        auto& ref = depth[x * vh + y];
         if (ref > z) {
-            image->setPixel(i, j, fill), ref = z;
+            image->setPixel(x, y, fill), ref = z;
         }
     }
 
@@ -289,10 +285,9 @@ private:
     static Vec3 intersect(
         const Vec3& facePoint, const Vec3& faceNorm,
         const Vec3& lineDir, const Vec3& linePoint) {
-        return (((facePoint - linePoint) * faceNorm)
-                / (lineDir * faceNorm))
-                   * lineDir
-               + linePoint;
+        Ray    ray  = {linePoint, lineDir};
+        number tick = ray.flat(facePoint, faceNorm);
+        return ray.at(tick);
     }
 };
 
