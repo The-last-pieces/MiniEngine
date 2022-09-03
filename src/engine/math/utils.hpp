@@ -204,12 +204,12 @@ public:
     }
 
 public:
-    static constexpr Vec3 up    = make_vec(0, 1, 0);
-    static constexpr Vec3 down  = make_vec(0, -1, 0);
-    static constexpr Vec3 left  = make_vec(-1, 0, 0);
-    static constexpr Vec3 right = make_vec(1, 0, 0);
-    static constexpr Vec3 front = make_vec(0, 0, 1);
-    static constexpr Vec3 back  = make_vec(0, 0, -1);
+    static constexpr Vec3 Right = make_vec(1, 0, 0), X = Right;
+    static constexpr Vec3 Left = make_vec(-1, 0, 0), Xn = Left;
+    static constexpr Vec3 Up = make_vec(0, 1, 0), Y = Up;
+    static constexpr Vec3 Down = make_vec(0, -1, 0), Yn = Down;
+    static constexpr Vec3 Front = make_vec(0, 0, 1), Z = Front;
+    static constexpr Vec3 Back = make_vec(0, 0, -1), Zn = Back;
 };
 
 // 矩阵相关的工厂函数
