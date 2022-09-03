@@ -24,6 +24,7 @@
 namespace mne {
 
 // 通用图片,使用stb_image库
+// 左下角为(0,0) , 右上角为(width-1, height-1)
 class Image {
     static constexpr int bpp = 3; // bytesPerPixel
 
@@ -129,14 +130,15 @@ public:
     // 二次插值获取像素信息
     Color getPixel(const Vec2& uv) const {
         auto   nw = number(width - 1), nh = number(height - 1);
-        number x  = MathUtils::clamp(0_n, uv.x() * nw, nw);
-        number y  = MathUtils::clamp(0_n, uv.y() * nh, nh);
-        int    x0 = int(x), y0 = int(y);
-        int    x1 = x0 + 1, y1 = y0 + 1;
+        number x = uv.x() * nw, y = uv.y() * nh;
+        int    x0 = int(x) % width, y0 = int(y) % height;
+        int    x1 = (x0 + 1) % width, y1 = (y0 + 1) % height;
+        number tx = MathUtils::mod(x - (number) x0, 1);
+        number ty = MathUtils::mod(y - (number) y0, 1);
         return MathUtils::lerp(
-            MathUtils::lerp(getPixel(x0, y0), getPixel(x1, y0), x - (number) x0), // 水平插值
-            MathUtils::lerp(getPixel(x0, y1), getPixel(x1, y1), x - (number) x0), // 水平插值
-            y - y0                                                                // 垂直插值
+            MathUtils::lerp(getPixel(x0, y0), getPixel(x1, y0), tx), // 水平插值
+            MathUtils::lerp(getPixel(x0, y1), getPixel(x1, y1), tx), // 水平插值
+            ty                                                       // 垂直插值
         );
     }
 
