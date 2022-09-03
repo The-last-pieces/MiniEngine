@@ -34,7 +34,7 @@ diffuse material ; 5k spp
 </strong>
 </p>
 
-![](docs/images/demos/rt/diffuse_5k.bmp)
+![](docs/images/demos/rt/diffuse_5k.png)
 
 <p align="center">
 <strong>
@@ -42,7 +42,7 @@ mirror material ; 500 spp
 </strong>
 </p> 
 
-![](docs/images/demos/rt/mirror_500.bmp)
+![](docs/images/demos/rt/mirror_500.png)
 
 <p align="center">
 <strong>
