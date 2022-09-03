@@ -102,10 +102,24 @@ public:
 /// Vec的工具函数
 class VecUtils {
 public:
-    // 关于平面对折
-    static constexpr Vec3 flapByFlat(Vec3 v, Vec3 n) {
-        // v' - v = -2 *(v * n) * n
-        return v - (2 * (v * n)) * n;
+    // 向量反射 , 假定v*n <= 0
+    static Vec3 reflect(const Vec3& in, const Vec3& normal) {
+        // v' - v = 2 * (v * n) * n
+        return in - (2 * (in * normal)) * normal;
+    }
+
+    // 向量折射 , 假定v*n <= 0 , eta为入射介质和折射介质的折射率比
+    static Vec3 refract(const Vec3& in, const Vec3& normal, number eta) {
+        // https://zhuanlan.zhihu.com/p/91129191
+        number dot = in * normal;
+        number k   = 1_n - eta * eta * (1_n - dot * dot);
+        if (k < 0) return {};
+        return eta * in - (eta * dot + sqrt(k)) * normal;
+    }
+
+    // 投影在向量上
+    static Vec3 mapToDir(const Vec3& from, const Vec3& toDir) {
+        return (from * toDir) * toDir;
     }
 
     // 关于向量对折
