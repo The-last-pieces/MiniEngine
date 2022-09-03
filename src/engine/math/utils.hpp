@@ -284,7 +284,7 @@ public:
     static Mat33 rotate(const Vec3& k, number angle) {
         // R = I + sin(θ) * K + (1 - cos(θ)) * K^2
         number c = std::cos(angle);
-        number s = std::sin(angle);
+        number s = -std::sin(angle);
         Mat33  K = anti(k.normalize());
         return identity<3>() + K * s + (K * K) * (1 - c);
     }
