@@ -82,12 +82,9 @@ public:
 
 public:
     void render() final {
-        vh = camera->vh, vw = camera->vw; // 视口大小
-        image->resize(vw, vh);            // 绑定画布
-        camera->update();                 // 更新摄像机参数
-
-        // 初始化深度缓存
-        depth.assign(vh * vw, std::numeric_limits<number>::max());
+        std::tie(vw, vh) = camera->getWH(); // 视口大小
+        image->resize(vw, vh, background);   // 重置图片
+        depth.assign(vw * vh, inf);          // 重置深度缓存
 
         // 转观察空间
         auto view_mat = camera->getViewMat();

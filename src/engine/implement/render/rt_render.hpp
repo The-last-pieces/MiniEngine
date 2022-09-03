@@ -16,7 +16,7 @@ class RtRender: public IRender {
 public:
     void render() final {
         // 初始化输出缓冲区
-        auto [vw, vh] = camera2->getWH(); // 视口大小
+        auto [vw, vh] = camera->getWH(); // 视口大小
         image->resize(vw, vh);
         // 初始化进度
         process.init(vw * vh, vh * 10);
@@ -43,7 +43,7 @@ private:
             // 在[x,x+1)x[y,y+1)内随机采样
             auto [ox, oy] = sampleArea();
             number sx = x + ox, sy = y + oy;
-            auto   ray = camera2->makeRay(sx, sy);
+            auto   ray = camera->makeRay(sx, sy);
             // 检查和场景的碰撞
             if (intersect(ray, hit)) {
                 sum += trace(ray.dir, hit);
