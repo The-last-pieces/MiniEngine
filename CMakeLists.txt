@@ -27,9 +27,7 @@ if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif ()
 
-# 在ide中配置程序运行路径代替默认的工作目录
-# 拷贝资源文件
-# file(COPY external/art DESTINATION ${EXECUTABLE_OUTPUT_PATH})
+# 不再拷贝资源文件 , 而是在ide中配置程序运行路径代替默认的工作目录实现相对路径
 
 # 源文件集合
 set(SOURCE_FILES
