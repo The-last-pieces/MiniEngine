@@ -95,12 +95,22 @@ public:
 
     // 弧度转角度
     static constexpr number rad2deg(number rad) {
-        return rad * 180_n / pi;
+        return rad * (180_n / pi);
+    }
+
+    template<int N>
+    static constexpr Vec<N> rad2deg(const Vec<N>& rad) {
+        return rad * (180_n / pi);
     }
 
     // 角度转弧度
     static constexpr number deg2rad(number deg) {
-        return deg * pi / 180_n;
+        return deg * (pi / 180_n);
+    }
+
+    template<int N>
+    static constexpr Vec<N> deg2rad(const Vec<N>& deg) {
+        return deg * (pi / 180_n);
     }
 };
 
