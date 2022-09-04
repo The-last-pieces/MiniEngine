@@ -20,16 +20,20 @@ type Dict<T> = { [key: string]: T }
 type Rotate = Vec2<Deg> | Vec3<Deg>
 
 
+type Transform = {
+    // 角度制
+    "rotate"?: Rotate, // [0,0,0]
+    "scale"?: Vec3,    // [1,1,1]
+    "translate"?: Vec3 // [0,0,0]
+}
+
 // 描述一个图元的信息
 interface ObjectInfo<Meta> {
-    "structure": Meta,
-    "transform": {
-        "scale": Vec3,
-        "rotate": Rotate,
-        "translate": Vec3
-    },
+    "hide"?: boolean, // 是否隐藏
+    "structure"?: Meta,
+    "transform"?: Transform,
     // 使用预定义的材质或者临时材质
-    "material": string | { "type": MaterialType, [key: string]: any }
+    "material"?: string | { "type": MaterialType, [key: string]: any }
 }
 
 // 渲染上下文
@@ -49,8 +53,10 @@ interface RenderContext {
     "image": {
         // 场景的名称
         "sceneName": string,
-        // 图片后缀 , 图片名 = `${sceneName}/spp_{spp}_v{idx}.{fileSuffix}`
+        // 图片后缀 , 图片名 = `../demo/${sceneName}/v{version}_spp{spp}.{fileSuffix}`
         "fileSuffix": "png" | "bmp",
+        // 版本号
+        "version": number,
         // 图片宽高, camera通过此值自动计算宽高比
         "width": PX,
         "height": PX,
@@ -58,8 +64,10 @@ interface RenderContext {
     "camera": {
         "eye": Vec3,
         "target": Vec3,
-        // 通过eye和target算出视线向量d,通过d和-z求出旋转的方位角和仰角,依次算出旋转后的+y再绕d顺时针旋转rotate角度作为up_dir
-        "rotate": Deg,
+        // 通过eye和target算出视线向量d,
+        // 通过d和-z求出旋转的方位角和仰角,
+        // 依次算出旋转后的+y再绕d旋转rotate角度作为up_dir
+        "rotate"?: Deg, // 默认0
         // 摄像机在垂直方向上的视线夹角,
         "fov": Deg
     },
@@ -69,7 +77,7 @@ interface RenderContext {
             // 一些常量 , 不能依赖其他变量
             "constants"?: Dict<number | Vec2 | Vec3>
             // 引入其他文件中的vars , 如果名称有冲突会警告
-            "imports": string[]
+            "imports"?: string[]
             // 材质的声明 , 可以使用合并后的constants中的变量
             "materials"?: {
                 // 漫反射材质
@@ -96,17 +104,20 @@ interface RenderContext {
         // 图元 , material字段可以引用合并后的预定义材质 , 只有临时材质可以使用constants
         "objects": {
             // 球体
-            "sphere": ObjectInfo<{}>[],
+            "sphere"?: ObjectInfo<{}>[],
             // 平面
-            "flat": ObjectInfo<{}>[],
+            "flat"?: ObjectInfo<{}>[],
         },
         // 模型
         "models": [
             {
+                "hide"?: boolean;
                 "objPath": string;
                 "texturePath": string;
                 "shaderType": "vertex" | "fragment";
+                "transform"?: Transform;
             }
-        ]
+        ],
+        // 导入其他scene信息(object和models)
     }
 }
