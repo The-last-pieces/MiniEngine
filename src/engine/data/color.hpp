@@ -73,9 +73,9 @@ struct Color {
     }
 
     // 将[0,256)映射到[0,1]
-    static constexpr Color fromRGB256(std::uint8_t r, std::uint8_t g, std::uint8_t b) {
+    static constexpr Color fromRGB256(number r, number g, number b) {
         constexpr int div = 255;
-        return {number(r) / div, number(g) / div, number(b) / div};
+        return {r / div, g / div, b / div};
     }
 };
 
