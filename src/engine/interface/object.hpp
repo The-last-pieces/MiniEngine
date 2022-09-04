@@ -33,8 +33,16 @@ public:
 public:
     IObject() { setMaterial(nullptr); }
 
-    // 是否为光源
-    bool isLight() const { return material->isLight(); }
+protected:
+    AABB bbox; // 包围盒
+
+    virtual void intersection(const Ray& ray, HitResult& hit) const = 0;
+
+    // 图元从初始状态经历一个仿射变换
+    virtual void setTransform(const Transform& transform) = 0;
+
+    // Todo 更新包围盒
+    virtual void updateAABB() {}
 
 public:
     // 光源重要性采样,随机在物体表面上采样一个点
@@ -42,6 +50,9 @@ public:
 
     // 表面积
     virtual number area() const = 0;
+
+    // 是否为光源
+    bool isLight() const { return material->isLight(); }
 
 public:
     // sampleLight的概率密度,即1/表面积
@@ -72,15 +83,6 @@ public:
         requires((std::is_base_of_v<IObject, T>) ) {
         obj->material = material;
         return obj;
-    }
-
-protected:
-    AABB bbox; // 包围盒
-
-    virtual void intersection(const Ray& ray, HitResult& hit) const {}
-
-    // 图元经历一个仿射变换,如果矩阵不是仿射变换则行为未定义
-    virtual void afterTransform(const Mat44& transform) {
     }
 };
 
