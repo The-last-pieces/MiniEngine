@@ -88,6 +88,11 @@ public:
         return ret;
     }
 
+    // 整数求膜
+    static int mod_i(int val, int m) {
+        return (val % m + m) % m;
+    }
+
     // 弧度转角度
     static constexpr number rad2deg(number rad) {
         return rad * 180_n / pi;
