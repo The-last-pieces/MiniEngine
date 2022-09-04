@@ -318,6 +318,11 @@ public:
             {0, 0, 1}};
     }
 
+    // 按欧拉角旋转
+    static Mat33 rotateXYZ(const Vec3& xyz) {
+        return merge(rotateX(xyz.x()), rotateY(xyz.y()), rotateZ(xyz.z()));
+    }
+
     // 绕(过原点的)任意轴旋转,右手拇指朝向k,四指方向为旋转方向
     static Mat33 rotate(const Vec3& k, number angle) {
         // R = I + sin(θ) * K + (1 - cos(θ)) * K^2
