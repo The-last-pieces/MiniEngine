@@ -131,7 +131,7 @@ public:
     Color getPixel(const Vec2& uv) const {
         auto   nw = number(width - 1), nh = number(height - 1);
         number x = uv.x() * nw, y = uv.y() * nh;
-        int    x0 = int(x) % width, y0 = int(y) % height;
+        int    x0 = MathUtils::mod_i((int) x, width), y0 = MathUtils::mod_i((int) y, height);
         int    x1 = (x0 + 1) % width, y1 = (y0 + 1) % height;
         number tx = MathUtils::mod(x - (number) x0, 1);
         number ty = MathUtils::mod(y - (number) y0, 1);
