@@ -262,6 +262,29 @@ public:
         }
     }
 
+    // 将旋转矩阵反推出欧拉角(XYZ向量)
+    static Vec3 mat2xyz(const Mat33& R) {
+        // https://www.jianshu.com/p/5e130c04a602
+        number sy = sqrt(R.at(0, 0) * R.at(0, 0) + R.at(1, 0) * R.at(1, 0));
+        number x, y, z;
+        if (sy >= eps) {
+            x = atan2(R.at(2, 1), R.at(2, 2));
+            y = atan2(-R.at(2, 0), sy);
+            z = atan2(R.at(1, 0), R.at(0, 0));
+        } else {
+            x = atan2(-R.at(1, 2), R.at(1, 1));
+            y = atan2(-R.at(2, 0), sy);
+            z = 0;
+        }
+        return {x, y, z};
+    }
+
+    // 将方位变换转为欧拉角
+    static Vec3 angle2xyz(const Vec2& theta_phi) {
+        Vec3 x = VecUtils::angle2dir({theta_phi.x() - pi_half, 0});
+        return mat2xyz(merge(rotateY(theta_phi.x()), rotate(x, theta_phi.y())));
+    }
+
 #pragma endregion
 public:
 #pragma region 旋转矩阵3x3
