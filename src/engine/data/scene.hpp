@@ -21,6 +21,10 @@ public:
     void addObject(std::shared_ptr<IObject> object) {
         objects.push_back(std::move(object));
     }
+
+    void addModel(std::shared_ptr<Model> model) {
+        models.push_back(std::move(model));
+    }
 };
 
 } // namespace mne
