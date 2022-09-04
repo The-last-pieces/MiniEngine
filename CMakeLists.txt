@@ -36,11 +36,17 @@ set(SOURCE_FILES
         src/engine/data/color.hpp
         src/engine/data/ray.hpp
         src/engine/data/scene.hpp
+        src/engine/data/transform.hpp
 
+        src/engine/store/context.hpp
         src/engine/store/image.hpp
         src/engine/store/model.hpp
 
         src/engine/accelerator/AABB.hpp
+
+        src/engine/math/mat.hpp
+        src/engine/math/utils.hpp
+        src/engine/math/vec.hpp
 
         src/engine/interface/render.hpp
         src/engine/interface/shader.hpp
@@ -59,15 +65,13 @@ set(SOURCE_FILES
         src/engine/implement/objects/sphere.hpp
         src/engine/implement/objects/rectangle.hpp
 
-        src/engine/math/mat.hpp
-        src/engine/math/utils.hpp
-        src/engine/math/vec.hpp
-
         src/engine/implement/render/rs_render.hpp
         src/engine/implement/render/rt_render.hpp
 
         src/engine/implement/texture/solid.hpp
         src/engine/implement/texture/mapping.hpp
+
+        src/engine/implement/shader/simple.hpp
 
         src/engine/tools/average.hpp
         src/engine/tools/process.hpp
