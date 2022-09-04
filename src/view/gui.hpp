@@ -5,10 +5,10 @@
 #ifndef MINI_ENGINE_GUI_HPP
 #define MINI_ENGINE_GUI_HPP
 
-#include "../engine/interface/render.hpp"
-#include "../engine/store/image.hpp"
+#include "engine/interface/render.hpp"
+#include "engine/store/image.hpp"
+#include "engine/tools/average.hpp"
 #include "GLFW/glfw3.h"
-#include "../engine/tools/average.hpp"
 #include <string>
 #include <ctime>
 #include <thread>

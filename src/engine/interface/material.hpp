@@ -5,10 +5,10 @@
 #ifndef MINI_ENGINE_MATERIAL_HPP
 #define MINI_ENGINE_MATERIAL_HPP
 
-#include "../data/color.hpp"
-#include "../math/vec.hpp"
-#include "../data/ray.hpp"
-#include "./texture.hpp"
+#include "data/color.hpp"
+#include "data/ray.hpp"
+#include "math/vec.hpp"
+#include "texture.hpp"
 
 namespace mne {
 

@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_RAY_HPP
 #define MINI_ENGINE_RAY_HPP
 
-#include "../math/vec.hpp"
+#include "math/vec.hpp"
 
 namespace mne {
 

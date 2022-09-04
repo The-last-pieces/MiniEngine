@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_TEXTURE_HPP
 #define MINI_ENGINE_TEXTURE_HPP
 
-#include "../data/color.hpp"
+#include "data/color.hpp"
 
 namespace mne {
 

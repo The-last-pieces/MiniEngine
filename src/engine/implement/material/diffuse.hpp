@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_DIFFUSE_HPP
 #define MINI_ENGINE_DIFFUSE_HPP
 
-#include "../../interface/material.hpp"
-#include "../texture/solid.hpp"
+#include "interface/material.hpp"
+#include "implement/texture/solid.hpp"
 
 namespace mne {
 

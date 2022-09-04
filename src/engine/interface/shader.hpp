@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_SHADER_HPP
 #define MINI_ENGINE_SHADER_HPP
 
-#include "../math/mat.hpp"
-#include "../data/color.hpp"
+#include "data/color.hpp"
+#include "math/mat.hpp"
 
 namespace mne {
 

@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_SOLID_HPP
 #define MINI_ENGINE_SOLID_HPP
 
-#include "../../interface/texture.hpp"
+#include "interface/texture.hpp"
 
 namespace mne {
 

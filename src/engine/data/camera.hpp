@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_CAMERA_HPP
 #define MINI_ENGINE_CAMERA_HPP
 
-#include "../data/ray.hpp"
-#include "../math/utils.hpp"
+#include "data/ray.hpp"
+#include "math/utils.hpp"
 
 namespace mne {
 

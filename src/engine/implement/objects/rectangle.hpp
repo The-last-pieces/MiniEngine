@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_RECTANGLE_HPP
 #define MINI_ENGINE_RECTANGLE_HPP
 
-#include "../../interface/object.hpp"
+#include "interface/object.hpp"
 
 namespace mne {
 

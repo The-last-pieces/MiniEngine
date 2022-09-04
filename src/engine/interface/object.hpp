@@ -5,9 +5,10 @@
 #ifndef MINI_ENGINE_OBJECT_HPP
 #define MINI_ENGINE_OBJECT_HPP
 
-#include "../accelerator/AABB.hpp"
-#include "../data/ray.hpp"
-#include "../implement/material/default.hpp"
+#include "data/ray.hpp"
+#include "data/transform.hpp"
+#include "accelerator/AABB.hpp"
+#include "implement/material/default.hpp"
 
 namespace mne {
 

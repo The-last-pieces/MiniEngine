@@ -5,9 +5,9 @@
 #ifndef MINI_ENGINE_RENDER_HPP
 #define MINI_ENGINE_RENDER_HPP
 
-#include "../store/image.hpp"
-#include "../data/camera.hpp"
-#include "../data/scene.hpp"
+#include "data/camera.hpp"
+#include "data/scene.hpp"
+#include "store/image.hpp"
 
 namespace mne {
 // 渲染器接口,输入摄像机+光源+模型信息,输出图片

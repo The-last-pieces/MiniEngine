@@ -5,11 +5,11 @@
 #ifndef MINI_ENGINE_UTILS_HPP
 #define MINI_ENGINE_UTILS_HPP
 
+#include "math/vec.hpp"
+#include "math/mat.hpp"
+#include <concepts>
 #include <random>
 #include <ctime>
-#include "../math/vec.hpp"
-#include "../math/mat.hpp"
-#include <concepts>
 
 namespace mne {
 

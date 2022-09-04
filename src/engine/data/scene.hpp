@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_SCENE_HPP
 #define MINI_ENGINE_SCENE_HPP
 
-#include "../store/model.hpp"
-#include "../interface/object.hpp"
+#include "interface/object.hpp"
+#include "store/model.hpp"
 #include <vector>
 
 namespace mne {

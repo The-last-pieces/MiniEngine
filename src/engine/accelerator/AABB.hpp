@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_AABB_HPP
 #define MINI_ENGINE_AABB_HPP
 
-#include "../math/vec.hpp"
-#include "../data/ray.hpp"
+#include "math/vec.hpp"
+#include "data/ray.hpp"
 
 namespace mne {
 

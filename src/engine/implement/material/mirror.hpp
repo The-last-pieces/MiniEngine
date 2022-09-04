@@ -5,7 +5,7 @@
 #ifndef MINI_ENGINE_MIRROR_HPP
 #define MINI_ENGINE_MIRROR_HPP
 
-#include "../../interface/material.hpp"
+#include "interface/material.hpp"
 
 namespace mne {
 

@@ -5,9 +5,9 @@
 #ifndef MINI_ENGINE_MODEL_HPP
 #define MINI_ENGINE_MODEL_HPP
 
-#include "../interface/shader.hpp"
-#include "../interface/texture.hpp"
 #include "data/transform.hpp"
+#include "interface/shader.hpp"
+#include "interface/texture.hpp"
 #include <vector>
 #include <fstream>
 #include <sstream>

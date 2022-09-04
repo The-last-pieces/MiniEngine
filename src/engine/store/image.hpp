@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_IMAGE_HPP
 #define MINI_ENGINE_IMAGE_HPP
 
-#include "../math/vec.hpp"
-#include "../data/color.hpp"
+#include "data/color.hpp"
+#include "math/vec.hpp"
 #include <vector>
 
 #define STB_IMAGE_IMPLEMENTATION

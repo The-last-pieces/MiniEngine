@@ -5,8 +5,8 @@
 #ifndef MINI_ENGINE_COLOR_HPP
 #define MINI_ENGINE_COLOR_HPP
 
+#include "math/utils.hpp"
 #include <cstdint>
-#include "../math/utils.hpp"
 
 /*
  提供颜色相关的api

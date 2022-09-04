@@ -7,7 +7,7 @@
 
 #include <utility>
 
-#include "../../interface/object.hpp"
+#include "interface/object.hpp"
 
 namespace mne {
 

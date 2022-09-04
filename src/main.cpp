@@ -1,4 +1,4 @@
-﻿#include "./engine/store/context.hpp"
+﻿#include "engine/store/context.hpp"
 #include "view/gui.hpp"
 
 using namespace mne;
