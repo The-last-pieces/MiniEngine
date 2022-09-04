@@ -66,21 +66,19 @@ public:
         return ret;
     }
 
-    template<class T>
-    static std::shared_ptr<T> load(
-        std::shared_ptr<T>                obj,
-        const std::shared_ptr<IMaterial>& material, const Mat44& transform)
-        requires((std::is_base_of_v<IObject, T>) ) {
-        obj->afterTransform(transform);
+    static std::shared_ptr<IObject> load(
+        std::shared_ptr<IObject>          obj,
+        const std::shared_ptr<IMaterial>& material,
+        const Transform&                  transform) {
+        obj->setTransform(transform);
+        obj->updateAABB();
         obj->material = material;
         return obj;
     }
 
-    template<class T>
-    static std::shared_ptr<T> load(
-        std::shared_ptr<T>                obj,
-        const std::shared_ptr<IMaterial>& material = nullptr)
-        requires((std::is_base_of_v<IObject, T>) ) {
+    static std::shared_ptr<IObject> load(
+        std::shared_ptr<IObject>          obj,
+        const std::shared_ptr<IMaterial>& material = nullptr) {
         obj->material = material;
         return obj;
     }
