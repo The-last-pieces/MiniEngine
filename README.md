@@ -156,9 +156,9 @@ _**PS:此文件结构不一定与当前源码一致**_
     - demos                   // demo图片
 - external                    // 第三方文件
   - art                       // binary资源文件
-    - models                  // 模型资源
+    - model                   // 模型资源
     - texture                 // 纹理资源
-    - scenes                  // 场景资源
+    - context                 // 渲染上下文配置文件
   - include                   // 引入的头文件
   - lib                       // 需要链接的静态库文件
 - src                         // 源码
