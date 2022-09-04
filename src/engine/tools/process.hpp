@@ -47,7 +47,7 @@ public:
             int cost  = int(clock() - start);
             int leave = int(((double) (total - cur) * cost) / (cur * 1000.0)); // 还剩多少秒
             // 打印累计时间
-            printf("leave : "), printTime(leave), printf(" , cost : "), printTime(cost / 1000), printf("\n");
+            printf("cost : "), printTime(cost / 1000), printf(" , leave : "), printTime(leave), printf("\n");
         }
     }
 };
