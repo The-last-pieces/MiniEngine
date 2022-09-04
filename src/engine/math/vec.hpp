@@ -105,9 +105,9 @@ public:
     }
 
     // 按位乘法
-    constexpr Vec mut() const {
+    constexpr Vec mut(const Vec& rhs) const {
         Vec ret;
-        for (int i = 0; i < N; ++i) ret[i] = data[i] * data[i];
+        for (int i = 0; i < N; ++i) ret[i] = data[i] * rhs[i];
         return ret;
     }
 
