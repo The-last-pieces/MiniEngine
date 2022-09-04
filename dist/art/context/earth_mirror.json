@@ -1,0 +1,151 @@
+﻿{
+  "render": {
+    "type": "rt",
+    "spp": 500,
+    "ui": false,
+    "background": [76, 76, 76]
+  },
+  "image": {
+    "sceneName": "earth_mirror",
+    "fileSuffix": "png",
+    "version": 0,
+    "width": 720,
+    "height": 720
+  },
+  "camera": {
+    "eye": [10, 10, 10],
+    "target": [0, 0, 0],
+    "rotate": 0,
+    "fov": 39.30764811610662
+  },
+  "scene": {
+    "vars": {
+      "constants": {
+        "rect_size": [200, 200, 1],
+        "sphere_size": [30, 30, 30],
+        "light": 25500
+      },
+      "materials": {
+        "diffuse": {
+          "red": {
+            "solid": [161, 16, 12]
+          },
+          "green": {
+            "solid": [36, 115, 23]
+          },
+          "blue": {
+            "solid": [60, 80, 239]
+          },
+          "white": {
+            "solid": [185, 181, 174]
+          },
+          "earth": {
+            "image": "art/texture/earth.bmp"
+          }
+        },
+        "diffuse_light": {
+          "light": {
+            "emit": ["light", "light", "light"]
+          }
+        },
+        "mirror": {
+          "mirror": {
+            "albedo": [255, 255, 255]
+          }
+        },
+        "refract": {
+          "glass": {
+            "index": 1.5
+          }
+        }
+      }
+    },
+    "objects": {
+      "sphere": [
+        {
+          "name": "redSphere",
+          "structure": {},
+          "transform": {
+            "scale": "sphere_size",
+            "rotate": [-144, 0],
+            "translate": [-70, -70, -70]
+          },
+          "material": "earth"
+        }
+      ],
+      "flat": [
+        {
+          "name": "left",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [90, 0],
+            "translate": [-100, 0, 0]
+          },
+          "material": "mirror"
+        },
+        {
+          "name": "right",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [-90, 0],
+            "translate": [100, 0, 0]
+          },
+          "material": "mirror"
+        },
+        {
+          "name": "top",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, -90],
+            "translate": [0, 100, 0]
+          },
+          "material": "mirror"
+        },
+        {
+          "name": "bottom",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 90],
+            "translate": [0, -100, 0]
+          },
+          "material": "mirror"
+        },
+        {
+          "name": "back",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 0],
+            "translate": [0, 0, -100]
+          },
+          "material": "mirror"
+        },
+        {
+          "hide": true,
+          "name": "front",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 0],
+            "translate": [0, 0, 100]
+          },
+          "material": "mirror"
+        },
+        {
+          "name": "light",
+          "structure": {},
+          "transform": {
+            "scale": [40, 40, 1],
+            "rotate": [0, -90],
+            "translate": [0, 99.99, 0]
+          },
+          "material": "light"
+        }
+      ]
+    }
+  }
+}

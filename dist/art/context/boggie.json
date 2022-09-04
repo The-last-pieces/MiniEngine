@@ -1,0 +1,53 @@
+﻿{
+  "render": {
+    "type": "rs",
+    "spp": 50,
+    "ui": true,
+    "background": [76, 76, 76]
+  },
+  "image": {
+    "sceneName": "boggie",
+    "fileSuffix": "png",
+    "version": 0,
+    "width": 720,
+    "height": 720
+  },
+  "camera": {
+    "eye": [0, 5, 30],
+    "target": [0, 0, 0],
+    "rotate": 0,
+    "fov": 50
+  },
+  "scene": {
+    "models": [
+      {
+        "hide": false,
+        "objPath": "art/model/boggie/body.obj",
+        "texturePath": "art/model/boggie/body_diffuse.tga",
+        "shaderType": "fragment",
+        "transform": {}
+      },
+      {
+        "hide": false,
+        "objPath": "art/model/boggie/eyes.obj",
+        "texturePath": "art/model/boggie/eyes_diffuse.tga",
+        "shaderType": "fragment",
+        "transform": {}
+      },
+      {
+        "hide": false,
+        "objPath": "art/model/boggie/head.obj",
+        "texturePath": "art/model/boggie/head_diffuse.tga",
+        "shaderType": "fragment",
+        "transform": {}
+      },
+      {
+        "hide": false,
+        "objPath": "art/model/floor.obj",
+        "texturePath": "",
+        "shaderType": "vertex",
+        "transform": {}
+      }
+    ]
+  }
+}

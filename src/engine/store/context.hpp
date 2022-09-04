@@ -272,7 +272,7 @@ private:
     static std::string makeSavePath(const std::string& sceneName, const std::string& fileSuffix, int version, int spp) {
         // 文件夹 = `../result/${sceneName}` , 文件名 = `v{version}_spp{spp}.{fileSuffix}`
         std::string dir, path;
-        dir += "../result/", dir += sceneName;
+        dir += "result/", dir += sceneName;
         std::filesystem::create_directories(dir);
         path += "/v", path += std::to_string(version);
         path += "_spp", path += std::to_string(spp);

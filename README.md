@@ -155,13 +155,14 @@ _**PS:此文件结构不一定与当前源码一致**_
   - images                    // markdown中引用的图片资源
     - demos                   // demo图片
 - external                    // 第三方文件
+  - include                   // 引入的头文件
+  - lib                       // 需要链接的静态库文件
+- src                         // 源码
+- dist                        // exe工作目录
   - art                       // binary资源文件
     - model                   // 模型资源
     - texture                 // 纹理资源
     - context                 // 渲染上下文配置文件
-  - include                   // 引入的头文件
-  - lib                       // 需要链接的静态库文件
-- src                         // 源码
 - .clang-format               // 控制代码格式
 - .gitattributes              // git项目属性
 - .gitignore                  // 忽略的文件
