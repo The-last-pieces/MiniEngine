@@ -1,0 +1,41 @@
+﻿{
+  "constants": {
+    "rect_size": [200, 200, 1],
+    "sphere_size": [30, 30, 30],
+    "light": 25500
+  },
+  "materials": {
+    "diffuse": {
+      "red": {
+        "solid": [161, 16, 12]
+      },
+      "green": {
+        "solid": [36, 115, 23]
+      },
+      "blue": {
+        "solid": [60, 80, 239]
+      },
+      "white": {
+        "solid": [185, 181, 174]
+      },
+      "earth": {
+        "image": "art/texture/earth.bmp"
+      }
+    },
+    "diffuse_light": {
+      "light": {
+        "emit": ["light", "light", "light"]
+      }
+    },
+    "mirror": {
+      "mirror": {
+        "albedo": [255, 255, 255]
+      }
+    },
+    "refract": {
+      "glass": {
+        "index": 1.5
+      }
+    }
+  }
+}

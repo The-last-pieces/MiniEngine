@@ -1,0 +1,103 @@
+﻿{
+  "render": {
+    "type": "rt",
+    "spp": 50,
+    "ui": false,
+    "background": [76, 76, 76]
+  },
+  "image": {
+    "sceneName": "corner_box",
+    "fileSuffix": "png",
+    "version": 0,
+    "width": 720,
+    "height": 720
+  },
+  "camera": {
+    "eye": [0, 0, 380],
+    "target": [0, 0, 0],
+    "rotate": 0,
+    "fov": 39.30764811610662
+  },
+  "scene": {
+    "vars": {
+      "imports": ["art/context/lib/materials.json"]
+    },
+    "objects": {
+      "sphere": [
+        {
+          "name": "redSphere",
+          "structure": {},
+          "transform": {
+            "scale": "sphere_size",
+            "rotate": [144, 0],
+            "translate": [0, -70, 0]
+          },
+          "material": "red"
+        }
+      ],
+      "flat": [
+        {
+          "name": "left",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [90, 0],
+            "translate": [-100, 0, 0]
+          },
+          "material": "red"
+        },
+        {
+          "name": "right",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [-90, 0],
+            "translate": [100, 0, 0]
+          },
+          "material": "green"
+        },
+        {
+          "name": "top",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, -90],
+            "translate": [0, 100, 0]
+          },
+          "material": "white"
+        },
+        {
+          "name": "bottom",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 90],
+            "translate": [0, -100, 0]
+          },
+          "material": "white"
+        },
+        {
+          "name": "back",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 0],
+            "translate": [0, 0, -100]
+          },
+          "material": "white"
+        },
+        {
+          "name": "light",
+          "structure": {},
+          "transform": {
+            "scale": [40, 40, 1],
+            "rotate": [0, -90],
+            "translate": [0, 99.99, 0]
+          },
+          "material": "light"
+        }
+      ]
+    },
+    "imports" : []
+  }
+}
