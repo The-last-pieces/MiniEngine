@@ -5,30 +5,15 @@
 #ifndef MINI_ENGINE_MODEL_HPP
 #define MINI_ENGINE_MODEL_HPP
 
-#include "../math/utils.hpp"
 #include "../interface/shader.hpp"
 #include "../interface/texture.hpp"
+#include "data/transform.hpp"
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
 namespace mne {
-
-struct Transform {
-    Vec3 offset{};
-    Vec3 rotate{};
-    Vec3 scale{1, 1, 1};
-
-    Mat44 get_matrix() const {
-        return MatUtils::merge(
-            MatUtils::rotateX(rotate.x()).as4(),
-            MatUtils::rotateY(rotate.y()).as4(),
-            MatUtils::rotateZ(rotate.z()).as4(),
-            MatUtils::scaleXYZ(scale).as4(),
-            MatUtils::translate(offset));
-    }
-};
 
 // 三角形的节点信息
 struct TriangleNode {
