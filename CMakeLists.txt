@@ -36,6 +36,7 @@ set(SOURCE_FILES
         src/engine/data/ray.hpp
         src/engine/data/scene.hpp
         src/engine/data/transform.hpp
+        src/engine/data/xyz.hpp
 
         src/engine/store/context.hpp
         src/engine/store/image.hpp
@@ -60,9 +61,10 @@ set(SOURCE_FILES
         src/engine/implement/material/micro.hpp
         src/engine/implement/material/disney.hpp
 
-        src/engine/implement/objects/aggregate.hpp
         src/engine/implement/objects/sphere.hpp
         src/engine/implement/objects/rectangle.hpp
+        src/engine/implement/objects/aggregate.hpp
+        src/engine/implement/objects/cube.hpp
 
         src/engine/implement/render/rs_render.hpp
         src/engine/implement/render/rt_render.hpp
