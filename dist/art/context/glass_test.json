@@ -1,0 +1,130 @@
+﻿{
+  "render": {
+    "type": "rt",
+    "spp": 5000,
+    "ui": false,
+    "background": [100, 100, 100]
+  },
+  "image": {
+    "sceneName": "glass_test",
+    "fileSuffix": "png",
+    "version": 0,
+    "width": 720,
+    "height": 720
+  },
+  "camera": {
+    "eye": [0, 0, 380],
+    "target": [0, 0, 0],
+    "rotate": 0,
+    "fov": 39.30764811610662
+  },
+  "scene": {
+    "vars": {
+      "imports": ["art/context/lib/materials.json"]
+    },
+    "objects": {
+      "cube": [
+        {
+          "name": "leftCube",
+          "structure": {},
+          "transform": {
+            "scale": [60, 120, 60],
+            "rotate": [20, 0],
+            "translate": [-32, -40, -20]
+          },
+          "material": "white"
+        }
+      ],
+      "sphere": [
+        {
+          "hide": false,
+          "name": "redSphere",
+          "structure": {},
+          "transform": {
+            "scale": [60, 60, 60],
+            "rotate": [0, 0],
+            "translate": [33, -70, 30]
+          },
+          "material": "glass"
+        }
+      ],
+      "flat": [
+        {
+          "hide": true,
+          "name": "mid",
+          "structure": {},
+          "transform": {
+            "scale": [1000, 1000, 1],
+            "rotate": [0, -90],
+            "translate": [0, -70, 0]
+          },
+          "material": {
+            "type": "refract",
+            "index": 1.2
+          }
+        },
+        {
+          "name": "left",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [90, 0],
+            "translate": [-100, 0, 0]
+          },
+          "material": "red"
+        },
+        {
+          "name": "right",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [-90, 0],
+            "translate": [100, 0, 0]
+          },
+          "material": "green"
+        },
+        {
+          "name": "top",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, -90],
+            "translate": [0, 100, 0]
+          },
+          "material": "white"
+        },
+        {
+          "name": "bottom",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 90],
+            "translate": [0, -100, 0]
+          },
+          "material": "white"
+        },
+        {
+          "name": "back",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 0],
+            "translate": [0, 0, -100]
+          },
+          "material": "white"
+        },
+        {
+          "name": "light",
+          "structure": {},
+          "transform": {
+            "scale": [40, 40, 1],
+            "rotate": [0, -90],
+            "translate": [0, 99.99, 0]
+          },
+          "material": "light"
+        }
+      ]
+    },
+    "imports": []
+  }
+}
