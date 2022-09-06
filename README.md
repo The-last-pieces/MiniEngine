@@ -16,25 +16,23 @@
 
 # Demo
 
-## 光栅化
-
-<p align="center">
-<strong>
-boggie 1w face
-</strong>
-</p>
-
-![](docs/images/demos/rs/boggie_1w.png)
-
 ## 光线追踪
 
 <p align="center">
 <strong>
-diffuse material ; 5k spp
+corner box ; 5k spp
 </strong>
 </p>
 
-![](docs/images/demos/rt/diffuse_5k.png)
+![](docs/images/demos/rt/corner_box_5k.png)
+
+<p align="center">
+<strong>
+image texture ; 500 spp
+</strong>
+</p> 
+
+![](docs/images/demos/rt/earth_500.png)
 
 <p align="center">
 <strong>
@@ -44,13 +42,32 @@ mirror material ; 500 spp
 
 ![](docs/images/demos/rt/mirror_500.png)
 
+
 <p align="center">
 <strong>
-image texture ; 500 spp
+glass material ; 5k spp
 </strong>
 </p> 
 
-![](docs/images/demos/rt/earth_500.png)
+![](docs/images/demos/rt/glass_5k.png)
+
+<p align="center">
+<strong>
+diffuse material ; 5k spp
+</strong>
+</p>
+
+![](docs/images/demos/rt/diffuse_5k.png)
+
+## 光栅化
+
+<p align="center">
+<strong>
+boggie 1w face
+</strong>
+</p>
+
+![](docs/images/demos/rs/boggie_1w.png)
 
 # Feature
 
