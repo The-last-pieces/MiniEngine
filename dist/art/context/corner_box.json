@@ -1,14 +1,14 @@
 ﻿{
   "render": {
     "type": "rt",
-    "spp": 50,
+    "spp": 5000,
     "ui": false,
-    "background": [76, 76, 76]
+    "background": [25, 25, 25]
   },
   "image": {
     "sceneName": "corner_box",
     "fileSuffix": "png",
-    "version": 0,
+    "version": 2,
     "width": 720,
     "height": 720
   },
@@ -23,16 +23,26 @@
       "imports": ["art/context/lib/materials.json"]
     },
     "objects": {
-      "sphere": [
+      "cube": [
         {
-          "name": "redSphere",
+          "name": "rightCube",
           "structure": {},
           "transform": {
-            "scale": "sphere_size",
-            "rotate": [144, 0],
-            "translate": [0, -70, 0]
+            "scale": [60, 60, 60],
+            "rotate": [-20, 0],
+            "translate": [33, -70, 30]
           },
-          "material": "red"
+          "material": "white"
+        },
+        {
+          "name": "leftCube",
+          "structure": {},
+          "transform": {
+            "scale": [60, 120, 60],
+            "rotate": [20, 0],
+            "translate": [-32, -40, -20]
+          },
+          "material": "white"
         }
       ],
       "flat": [
@@ -94,10 +104,14 @@
             "rotate": [0, -90],
             "translate": [0, 99.99, 0]
           },
-          "material": "light"
+          "material": {
+            "type": "diffuse_light",
+            "emit_": "[244,234,180]*150",
+            "emit": [30500, 29250, 22500]
+          }
         }
       ]
     },
-    "imports" : []
+    "imports": []
   }
 }
