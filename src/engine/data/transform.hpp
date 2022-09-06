@@ -12,15 +12,37 @@ namespace mne {
 struct Transform {
     Vec3 scale{1, 1, 1};
     Vec3 rotate{};
-    Vec3 offset{};
+    Vec3 translate{};
+
+    Transform(const Vec3& scale = {1, 1, 1}, const Vec3& rotate = {}, const Vec3& translate = {}):
+        scale(scale), rotate(rotate), translate(translate) {}
 
     Mat44 get_matrix() const {
         return MatUtils::merge(
-            MatUtils::rotateX(rotate.x()).as4(),
-            MatUtils::rotateY(rotate.y()).as4(),
-            MatUtils::rotateZ(rotate.z()).as4(),
             MatUtils::scaleXYZ(scale).as4(),
-            MatUtils::translate(offset));
+            MatUtils::rotateXYZ(rotate).as4(),
+            MatUtils::translate(translate));
+    }
+
+public:
+    static Transform Scale(const Vec3& scale) {
+        Transform transform;
+        return transform.scale = scale, transform;
+    }
+
+    static Transform Rotate(const Vec3& rotate) {
+        Transform transform;
+        return transform.rotate = rotate, transform;
+    }
+
+    static Transform Translate(const Vec3& translate) {
+        Transform transform;
+        return transform.translate = translate, transform;
+    }
+
+    static Transform RotateTranslate(const Vec3& rotate, const Vec3& translate) {
+        Transform transform;
+        return transform.rotate = rotate, transform.translate = translate, transform;
     }
 };
 
