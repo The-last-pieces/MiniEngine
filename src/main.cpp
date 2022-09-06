@@ -14,10 +14,14 @@ void show(bool ui, const std::shared_ptr<IRender>& render, const std::string& pa
     }
 }
 
-int main() {
-    // Todo 使用json文件配置执行哪些context
+void runContext(const std::string& path) {
     RenderContext context;
-    context.loadFromJson(JsonUtils::load("art/context/corner_box.json"));
+    context.loadFromJson(JsonUtils::load(path));
     show(context.ui, context.render, context.savePath);
+}
+
+int main() {
+    json task = JsonUtils::load("art/context/task.json");
+    for (auto& path : task) runContext(path);
     return 0;
 }
