@@ -10,6 +10,7 @@
 
 #include "implement/objects/sphere.hpp"
 #include "implement/objects/rectangle.hpp"
+#include "implement/objects/cube.hpp"
 
 #include "implement/material/diffuse.hpp"
 #include "implement/material/mirror.hpp"
@@ -188,6 +189,8 @@ private:
             ret = std::make_shared<Sphere>();
         } else if (type == "flat") {
             ret = std::make_shared<Rectangle>();
+        } else if (type == "cube") {
+            ret = std::make_shared<Cube>();
         } else {
             throw error("object type error");
         }
