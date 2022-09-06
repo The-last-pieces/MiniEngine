@@ -23,22 +23,19 @@ class Sphere final: public IObject {
 public:
     Sphere() = default;
 
-    Sphere(const Vec3& _c, number _r):
-        center(_c) {
-        length = make_vec(_r, _r, _r);
-    }
-
 protected:
-    void setTransform(const Transform& transform) final {
-        center = transform.offset;
-        length = transform.scale;
-
-        Mat33 mat = MatUtils::rotateXYZ(transform.rotate);
-        x = mat * VecUtils::X, y = mat * VecUtils::Y, z = x.cross(y);
-
-        if (length.x() < 0) x *= -1, length.x() *= -1;
-        if (length.y() < 0) y *= -1, length.y() *= -1;
-        if (length.z() < 0) z *= -1, length.z() *= -1;
+    void onSetTransform() final {
+        // 更新三个轴
+        std::tie(x, y, z) = std::make_tuple(
+            dToWorld(VecUtils::X / 2_n),
+            dToWorld(VecUtils::Y / 2_n),
+            dToWorld(VecUtils::Z / 2_n));
+        // 更新球心坐标
+        center = pToWorld(make_vec(0, 0, 0));
+        // 更新轴长
+        length = make_vec(x.length(), y.length(), z.length());
+        // 轴线归一化
+        x /= length.x(), y /= length.y(), z /= length.z();
     }
 
 public:

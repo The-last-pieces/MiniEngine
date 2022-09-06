@@ -41,14 +41,14 @@ protected:
         hit.setNormal(z, ray);
     }
 
-    void setTransform(const Transform& transform) final {
-        Mat33 mat = MatUtils::rotateXYZ(transform.rotate);
-        x = mat * VecUtils::X, y = mat * VecUtils::Y, z = x.cross(y);
-        width = transform.scale.x(), height = transform.scale.y();
-        if (width < 0) x = -x, width = -width;
-        if (height < 0) y = -y, height = -height;
-        if (transform.scale.z() < 0) z = -z;
-        leftBottom = transform.offset - x * (width / 2) - y * (height / 2);
+    void onSetTransform() final {
+        // 更新宽高轴
+        std::tie(x, y) = std::make_tuple(
+            dToWorld(VecUtils::X),
+            dToWorld(VecUtils::Y));
+        std::tie(width, height) = std::make_pair(x.length(), y.length());
+        x /= width, y /= height, z = x.cross(y);
+        leftBottom = pToWorld(make_vec(-0.5_n, -0.5_n, 0));
     }
 
 private:
