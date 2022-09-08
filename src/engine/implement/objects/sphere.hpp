@@ -92,32 +92,13 @@ protected:
     }
 
 private:
-    // Todo 完善球面纹理映射
     // 方向向量映射到纹理坐标
-    Vec2 mapping_uv(const Vec3& normal2) const {
-        //auto [theta, phi] = VecUtils::dir2angle(VecUtils::toLocal(normal, x, y, z)).data;
-        // auto [theta, phi] = VecUtils::dir2angle(normal).data;
-        //theta += pi / 10 * 8;
-        //phi = pi_half;
-        //return {MathUtils::mod(theta, pi2) / pi2, MathUtils::mod((phi + pi_half), pi) / pi};
-        // Todo 使用dir2angle会出现白噪点
-        auto normal = VecUtils::toLocal(normal2, x, y, z);
-        auto theta = acos(-normal.y());                   // 仰角
-        auto phi   = atan2(-normal.z(), normal.x()) + pi; // 转角
-
-        phi = std::fmod(std::fmod(phi, pi * 2_n) + pi * 2_n, pi * 2_n);
-
-        return {phi / (2 * pi), theta / pi};
-
-//        // acos : [-1, 1] => [pi, 0]
-//        auto theta = acos(-normal.y()); // 仰角
-//        // (1,0) => 0 , (0,1)=> pi/2 , (-1,0) => pi
-//        // (1,0) => pi
-//        auto phi = atan2(normal.z(), -normal.x()); // 方位角  + pi / 10 * 8
-//
-//        phi = MathUtils::mod(phi, pi2);
-//
-//        return {phi / pi2, theta / pi};
+    Vec2 mapping_uv(const Vec3& normal) const {
+        auto [theta, phi] =
+            VecUtils::dir2angle(VecUtils::toLocal(normal, x, y, z)).data;
+        return {
+            MathUtils::mod(theta + pi, pi2) / pi2,
+            MathUtils::mod(phi + pi_half, pi) / pi};
     }
 };
 
