@@ -25,6 +25,9 @@
     "diffuse_light": {
       "light": {
         "emit": ["light", "light", "light"]
+      },
+      "yellow_light": {
+        "emit": [30500, 29250, 22500]
       }
     },
     "mirror": {
