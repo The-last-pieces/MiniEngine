@@ -1,0 +1,123 @@
+﻿{
+  "render": {
+    "type": "rt",
+    "spp": 500,
+    "ui": false,
+    "background": [0, 0, 0]
+  },
+  "image": {
+    "sceneName": "mirror_sphere",
+    "fileSuffix": "png",
+    "version": 2,
+    "width": 720,
+    "height": 720
+  },
+  "camera": {
+    "eye": [0, 0, 380],
+    "target": [0, 0, 0],
+    "rotate": 0,
+    "fov": 39.30764811610662
+  },
+  "scene": {
+    "vars": {
+      "imports": ["art/context/lib/materials.json"]
+    },
+    "objects": {
+      "sphere": [
+        {
+          "name": "s1",
+          "structure": {},
+          "transform": {
+            "scale": "sphere_size",
+            "rotate": [0, 0, 0],
+            "translate": [-45, 8, 0]
+          },
+          "material": "mirror"
+        },
+        {
+          "name": "s2",
+          "structure": {},
+          "transform": {
+            "scale": "sphere_size",
+            "rotate": [0, 0, 0],
+            "translate": [45, 8, 0]
+          },
+          "material": "mirror"
+        },
+        {
+          "name": "s3",
+          "structure": {},
+          "transform": {
+            "scale": "sphere_size",
+            "rotate": [0, 0, 0],
+            "translate": [0, -70, 0]
+          },
+          "material": "mirror"
+        }
+      ],
+      "flat": [
+        {
+          "name": "left",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [90, 0],
+            "translate": [-100, 0, 0]
+          },
+          "material": "red"
+        },
+        {
+          "name": "right",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [-90, 0],
+            "translate": [100, 0, 0]
+          },
+          "material": "green"
+        },
+        {
+          "name": "top",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, -90],
+            "translate": [0, 100, 0]
+          },
+          "material": "white"
+        },
+        {
+          "name": "bottom",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 90],
+            "translate": [0, -100, 0]
+          },
+          "material": "white"
+        },
+        {
+          "name": "back",
+          "structure": {},
+          "transform": {
+            "scale": "rect_size",
+            "rotate": [0, 0],
+            "translate": [0, 0, -100]
+          },
+          "material": "white"
+        },
+        {
+          "name": "light",
+          "structure": {},
+          "transform": {
+            "scale": [40, 40, 1],
+            "rotate": [0, -90],
+            "translate": [0, 99.99, 0]
+          },
+          "material": "light"
+        }
+      ]
+    },
+    "imports": []
+  }
+}
