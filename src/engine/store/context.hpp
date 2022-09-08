@@ -241,7 +241,7 @@ private:
             transform.rotate = MathUtils::deg2rad(toVec3(rotate));
         }
         // 平移
-        transform.offset = toVec3(obj.value("translate", "[0,0,0]"_json));
+        transform.translate = toVec3(obj.value("translate", "[0,0,0]"_json));
         return transform;
     }
 
