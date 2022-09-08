@@ -144,16 +144,11 @@ public:
 
     // 将球面坐标解析为方位角(theta)和极角(phi)
     // 方位角为+z逆时针转到dir的角度 , 极角为dir和xz屏幕的夹角
-    // 返回theta为[0,2pi), phi为[-pi,pi)
-    static Vec2 dir2angle(const Vec3& dir) {
-        // 计算+Z要旋转多少度才能追上dir在xz平面上的投影
-        Vec2   mapping = dir.pick<0, 2>();
-        number phi     = Z.pick<0, 2>().rotate(mapping);
-        // mapping和dir的夹角[0,pi/2]
-        Vec3   map_dir = {mapping.x(), 0, mapping.y()};
-        number theta   = dir.inner(map_dir);
-        if (dir.y() < 0) theta *= -1_n;
-        return {phi, theta};
+    // 返回theta为[0,2pi), phi为[-pi/2,pi/2)
+    static Vec2 dir2angle(const Vec3& z) {
+        number theta = atan2(z.x(), z.z());
+        number phi   = asin(z.y());
+        return {theta, phi};
     }
 
     // 将方位角和极角转换为球面坐标
