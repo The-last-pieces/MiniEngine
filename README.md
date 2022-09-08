@@ -144,6 +144,8 @@ _**PS:此文件结构不一定与当前源码一致**_
       - sphere.hpp       // 球体
       - rectangle.hpp    // 矩形
       - triangle.hpp     // *三角形
+      - aggregate.hpp    // 综合多个图元的复合对象
+      - cube.hpp         // 立方体
     - render             // 具体的渲染器实现
       - rt_render.hpp    // 光线追踪渲染器
       - rs_render.hpp    // 光栅化渲染器
